@@ -1,4 +1,4 @@
-# Rural Guardian Intelligence Platform — Final Submission
+# Rural Guardian Intelligence Platform
 
 **Microsoft Agent-a-Thon prototype**  
 **One AI platform for safer, smarter rural communities.**
