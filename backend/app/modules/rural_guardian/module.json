@@ -1,0 +1,1 @@
+{"name":"rural-guardian","version":"1.0.0","description":"Rural Guardian Network — agriculture, disaster, health safety and education.","entrypoint":"app.modules.rural_guardian.module","tools":["weather_context","knowledge_retrieval","risk_assessment","human_escalation"],"risky":true}

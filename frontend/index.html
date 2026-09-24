@@ -1,0 +1,3373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rural Guardian Intelligence Platform — Mega Platform Demo</title>
+<style>
+:root{
+  --bg:#f5f7fb;--surface:#fff;--surface2:#f8fafc;--border:#e5e9f0;--text:#172033;--muted:#738096;
+  --blue:#0b69d1;--blue2:#eaf3ff;--teal:#0b9b83;--green:#0ca678;--red:#e5484d;--amber:#d98b00;
+  --shadow:0 8px 30px rgba(22,34,51,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh;display:flex}
+.sidebar{width:258px;background:#fff;border-right:1px solid var(--border);position:fixed;top:0;bottom:0;left:0;padding:18px 14px;overflow:auto;z-index:20}
+.brand{display:flex;gap:11px;align-items:center;padding:8px 10px 22px}
+.brandmark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#0b69d1,#16a085);display:grid;place-items:center;color:#fff;font-weight:900}
+.brand b{font-size:16px}.brand small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.nav-label{padding:12px 12px 6px;color:#99a1af;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.nav button{width:100%;border:0;background:transparent;text-align:left;color:#596678;padding:10px 12px;border-radius:10px;margin:2px 0;display:flex;gap:10px;align-items:center;font-size:13px}
+.nav button:hover{background:#f3f6fa}.nav button.active{background:#eaf3ff;color:#0867c9;font-weight:800}
+.nav .mini{font-size:11px;padding-left:37px}
+.sidebar-bottom{margin-top:18px;border-top:1px solid var(--border);padding-top:14px}
+.main{margin-left:258px;width:calc(100% - 258px)}
+.topbar{height:72px;background:rgba(255,255,255,.92);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:10;backdrop-filter:blur(14px)}
+.search{width:min(430px,48vw);background:#f4f6f9;border:1px solid #e5e9f0;border-radius:11px;padding:10px 13px;color:#8b95a4;font-size:13px}
+.topright{display:flex;align-items:center;gap:9px}.chip{border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 10px;color:#586679;font-size:12px}.avatar{width:36px;height:36px;border-radius:50%;background:#12263f;color:#fff;display:grid;place-items:center;font-weight:800}
+.view{display:none}.view.active{display:block}
+.page{padding:30px;max-width:1500px;margin:auto}
+.breadcrumb{font-size:11px;color:#8b95a5;margin-bottom:10px}.title-row{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:20px}
+h1{font-size:34px;line-height:1.1}h2{font-size:22px}h3{font-size:16px}.sub{color:var(--muted);font-size:13px;line-height:1.55;margin-top:5px}.section{margin-top:28px}.row{display:flex;gap:12px;align-items:center}.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.metric .kicker{font-size:11px;color:var(--muted)}.metric .num{font-size:28px;font-weight:850;margin-top:7px}.metric .delta{font-size:11px;color:var(--green);margin-top:3px}
+.hero{background:linear-gradient(120deg,#091d36,#0b4f89 58%,#0c8e76);border-radius:23px;color:#fff;padding:42px;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:auto -100px -160px auto;width:440px;height:440px;border-radius:50%;background:rgba(255,255,255,.07)}
+.eyebrow{font-size:11px;color:#8de4d1;letter-spacing:1.5px;text-transform:uppercase;font-weight:800}.hero h1{font-size:42px;max-width:760px;margin:12px 0}.hero p{max-width:720px;color:#d8e6f3;line-height:1.6;font-size:15px}.hero-actions{margin-top:22px;display:flex;gap:10px}.btn{border-radius:10px;padding:11px 16px;border:1px solid var(--border);font-weight:750;font-size:13px;background:#fff;color:#17324e}.btn.primary{background:#fff;color:#084e8f;border-color:#fff}.btn.dark{background:#10283e;color:#fff;border-color:#10283e}.btn.soft{background:#eef6ff;color:#0b67c9;border-color:#d9eaff}.btn.danger{background:#fff3f3;color:#c53a40;border-color:#ffd0d0}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:21px}.pill{padding:7px 10px;border-radius:20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);font-size:11px}
+.agent-card{min-height:210px;position:relative}.agent-card .icon{width:52px;height:52px;background:#eff6ff;border-radius:14px;display:grid;place-items:center;font-size:29px;margin-bottom:15px}.agent-card p{font-size:12px;color:#6f7b8b;line-height:1.55}.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:13px}.tag{background:#f1f4f8;padding:5px 7px;border-radius:6px;font-size:10px;color:#5e6a7c}
+.feature{display:flex;justify-content:space-between;gap:18px;align-items:center}.feature-main{max-width:720px}.feature-visual{width:320px;height:200px;border-radius:18px;background:linear-gradient(135deg,#e9f3ff,#eafaf6);display:grid;place-items:center;font-size:84px}
+.list{display:grid;gap:10px}.list-item{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);border-radius:12px;padding:12px 13px;background:#fff}.left{display:flex;gap:10px;align-items:center}.status-dot{width:9px;height:9px;border-radius:50%;background:var(--green)}.status-dot.red{background:var(--red)}.status-dot.amber{background:var(--amber)}
+.workflow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px}.node{padding:10px 12px;background:#f7f9fc;border:1px solid var(--border);border-radius:10px;font-size:11px;font-weight:800}.arr{color:#96a0ae}
+.timeline{border-left:2px solid #e3e8ef;margin:15px 0 0 7px;padding-left:17px;display:grid;gap:15px}.timeline strong{font-size:12px}.timeline small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.progress{height:8px;border-radius:10px;background:#edf0f4;overflow:hidden;margin-top:10px}.bar{height:100%;background:linear-gradient(90deg,#0b69d1,#11a77f);border-radius:10px}
+.profile{display:grid;grid-template-columns:260px 1fr;gap:16px}.profile-card{text-align:center}.profile-photo{width:88px;height:88px;border-radius:50%;background:#0d2942;color:#fff;font-size:25px;font-weight:800;display:grid;place-items:center;margin:0 auto 10px}.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:17px}.profile-stats div{background:#f7f9fc;border-radius:10px;padding:10px}.profile-stats b{display:block;font-size:16px}.profile-stats span{font-size:10px;color:var(--muted)}
+.table{width:100%;border-collapse:collapse;font-size:12px}.table th,.table td{text-align:left;padding:11px;border-bottom:1px solid var(--border)}.table th{color:#7d8795;font-size:10px;text-transform:uppercase;letter-spacing:.6px}
+.agent-detail{display:grid;grid-template-columns:1.25fr .75fr;gap:16px}.big-agent{background:linear-gradient(120deg,#f0f7ff,#f0fbf8);border-radius:19px;min-height:280px;display:flex;align-items:center;justify-content:space-between;padding:28px}.big-agent .emoji{font-size:105px}
+.risk{display:inline-flex;align-items:center;gap:7px;border-radius:20px;padding:6px 9px;font-size:10px;font-weight:800}.risk.low{background:#e9f9f3;color:#087d61}.risk.med{background:#fff6e6;color:#9a6100}.risk.high{background:#fff0f0;color:#bf3840}
+.chat{display:grid;grid-template-columns:230px 1fr 260px;gap:12px;min-height:580px}.chatbox,.chat-side{background:#fff;border:1px solid var(--border);border-radius:16px;padding:15px}.messages{display:flex;flex-direction:column;gap:11px;max-height:430px;overflow:auto}.msg{max-width:78%;padding:11px 12px;border-radius:12px;font-size:12px;line-height:1.5}.msg.user{align-self:flex-end;background:#0b69d1;color:#fff}.msg.ai{background:#f4f7fa}.composer{display:flex;gap:8px;margin-top:12px}.composer input{flex:1;border:1px solid var(--border);border-radius:10px;padding:11px 12px;outline:none}
+.mini-nav button{display:block;width:100%;border:0;background:transparent;text-align:left;padding:9px;border-radius:9px;color:#5f6b7d;font-size:12px}.mini-nav button.active{background:#eef6ff;color:#0867c9;font-weight:800}
+.footer{background:#0a1729;color:#c7d1de;padding:30px;display:flex;justify-content:space-between;gap:20px;margin-top:30px}.footer h3{color:#fff;margin-bottom:7px}.footer p{font-size:11px;line-height:1.6;max-width:550px}
+
+
+.bi-chart{height:250px;display:flex;align-items:flex-end;gap:10px;padding:18px 10px 8px;border-top:1px solid var(--border);margin-top:12px}
+.bi-bar{flex:1;min-width:20px;background:linear-gradient(to top,#0b69d1,#13a786);border-radius:7px 7px 2px 2px;position:relative}
+.bi-bar span{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:10px;color:#647184}
+.bi-xlabels{display:flex;gap:10px;padding:3px 10px 0}
+.bi-xlabels span{flex:1;text-align:center;font-size:10px;color:#8792a2}
+.source-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:7px;background:#eef6ff;color:#0b69d1;font-size:10px;font-weight:800}
+.source-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+@media(max-width:760px){.source-list{grid-template-columns:1fr}.bi-chart{height:210px}}
+
+
+/* Copilot page: same platform cards, wider chat + narrow utility rail */
+.copilot-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:start}
+.copilot-main{min-width:0}
+.copilot-rail{display:grid;gap:16px}
+.copilot-chat-card{padding:0;overflow:hidden}
+.copilot-chat-head{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:14px}
+.copilot-chat-head small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.copilot-chat-tools{display:flex;gap:7px;flex-wrap:wrap}
+.copilot-messages{height:445px;padding:18px;overflow:auto;display:flex;flex-direction:column;gap:12px;background:#fbfcfe}
+.copilot-bubble{max-width:76%;padding:11px 13px;border-radius:12px;font-size:12px;line-height:1.55}
+.copilot-bubble.ai{background:#f1f5f9}.copilot-bubble.user{background:#0b69d1;color:#fff;align-self:flex-end}
+.copilot-compose{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border);background:#fff}
+.copilot-compose input{flex:1;border:1px solid var(--border);border-radius:10px;padding:11px 12px;outline:none;font-size:12px}
+.agent-choice{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.agent-choice button{border:1px solid var(--border);background:#fff;border-radius:10px;padding:10px;text-align:left;font-size:11px;color:#5c6878}
+.agent-choice button:hover,.agent-choice button.active{background:#eef6ff;color:#0867c9;border-color:#cfe2f8;font-weight:800}
+.side-list{display:grid;gap:9px;margin-top:12px}
+.side-list .item{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #edf0f4}
+.side-list .item:last-child{border-bottom:0;padding-bottom:0}
+.side-list .item b{font-size:11px}.side-list .item small{display:block;color:var(--muted);font-size:10px;margin-top:2px;line-height:1.45}
+.tip{background:#f6f9fc;border:1px solid var(--border);border-radius:11px;padding:10px;font-size:11px;line-height:1.55;color:#657184;margin-top:9px}
+.copilot-context{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:900px){.copilot-layout{grid-template-columns:1fr}.copilot-rail{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.copilot-drawer{left:12px;right:12px;top:70px;bottom:12px;width:auto}.copilot-fab{right:12px;bottom:12px}.copilot-messages{height:380px}.copilot-bubble{max-width:88%}}\n@media(max-width:650px){.copilot-rail{grid-template-columns:1fr}.copilot-messages{height:380px}.copilot-bubble{max-width:88%}}
+
+/* Right-side AI Copilot */
+.copilot-fab{pointer-events:auto !important;cursor:pointer !important;position:fixed;right:22px;bottom:22px;z-index:999999 !important;border:0;border-radius:16px;padding:13px 16px;background:#0b69d1;color:#fff;font-weight:800;box-shadow:0 14px 30px rgba(11,105,209,.26)}
+.copilot-drawer{position:fixed;right:20px;top:86px;bottom:20px;width:380px;background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:0 18px 60px rgba(17,34,51,.18);z-index:45;display:none;overflow:hidden}
+.copilot-drawer.open{display:flex;flex-direction:column}
+.copilot-head{padding:15px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.copilot-head small{color:var(--muted)}
+.copilot-body{padding:14px;display:flex;flex-direction:column;gap:10px;overflow:auto;flex:1}
+.copilot-msg{padding:10px 11px;border-radius:11px;font-size:12px;line-height:1.55;max-width:90%}
+.copilot-msg.ai{background:#f4f7fa}.copilot-msg.user{background:#0b69d1;color:#fff;align-self:flex-end}
+.copilot-input{display:flex;gap:7px;padding:12px;border-top:1px solid var(--border)}.copilot-input input{flex:1;border:1px solid var(--border);border-radius:10px;padding:10px;outline:none;font-size:12px}
+.risk-kpi{border-left:3px solid #0b69d1}.evidence-box{background:#f7f9fc;border:1px solid var(--border);border-radius:11px;padding:12px;font-size:11px;line-height:1.55}
+
+@media(max-width:1120px){.grid-4{grid-template-columns:repeat(2,1fr)}.agent-detail{grid-template-columns:1fr}.chat{grid-template-columns:190px 1fr}.chat-side{display:none}}
+@media(max-width:800px){.sidebar{width:220px}.main{margin-left:220px;width:calc(100% - 220px)}.grid-3,.grid-2,.profile{grid-template-columns:1fr}.feature{flex-direction:column}.feature-visual{width:100%}.topbar{padding:0 14px}.search{width:210px}.page{padding:18px}}
+@media(max-width:620px){.sidebar{display:none}.main{margin-left:0;width:100%}.topbar{height:62px}.topright .chip:not(.keep){display:none}.search{width:54vw}.hero{padding:28px 22px}.hero h1{font-size:31px}.grid-4{grid-template-columns:1fr}.chat{grid-template-columns:1fr}.chat>.chatbox:first-child{display:none}.footer{flex-direction:column}}
+
+/* Enhanced ecosystem/problem cards */
+.eco-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:15px;
+}
+.eco-section-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:24px 0 12px;
+}
+.eco-section-mark{
+  width:28px;
+  height:28px;
+  border-radius:8px;
+  display:grid;
+  place-items:center;
+  font-size:14px;
+  background:#edf5ff;
+  border:1px solid #d8e8fb;
+}
+.eco-section-head h3{
+  font-size:15px;
+}
+.eco-section-head p{
+  margin-top:2px;
+  font-size:11px;
+  color:var(--muted);
+}
+.eco-card{
+  min-height:205px;
+  position:relative;
+  overflow:hidden;
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.eco-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 14px 35px rgba(23,39,60,.10);
+  border-color:#cad8e8;
+}
+.eco-card.tint-blue{background:linear-gradient(180deg,#ffffff 0%,#f5f9ff 100%);border-color:#dce8f6}
+.eco-card.tint-green{background:linear-gradient(180deg,#ffffff 0%,#f3fbf8 100%);border-color:#dbeee8}
+.eco-card.tint-purple{background:linear-gradient(180deg,#ffffff 0%,#f8f4ff 100%);border-color:#e6ddf6}
+.eco-card.tint-amber{background:linear-gradient(180deg,#ffffff 0%,#fff9ef 100%);border-color:#f2e2be}
+.eco-card.tint-red{background:linear-gradient(180deg,#ffffff 0%,#fff5f5 100%);border-color:#f1dada}
+.eco-card.tint-cyan{background:linear-gradient(180deg,#ffffff 0%,#f2fbfd 100%);border-color:#d7edf1}
+.eco-icon-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.eco-icon{
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:rgba(255,255,255,.82);
+  border:1px solid rgba(210,221,234,.85);
+  font-size:22px;
+  box-shadow:0 4px 15px rgba(20,35,55,.05);
+}
+.eco-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  border-radius:20px;
+  padding:5px 8px;
+  font-size:9px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.3px;
+  background:rgba(255,255,255,.82);
+  border:1px solid #e1e6ed;
+  color:#657386;
+}
+.eco-card h4{
+  font-size:16px;
+  margin-top:15px;
+}
+.eco-card p{
+  color:#6f7b8c;
+  font-size:12px;
+  line-height:1.5;
+  margin-top:6px;
+}
+.eco-card .tags{
+  margin-top:12px;
+}
+.eco-card .meta{
+  margin-top:15px;
+}
+.problem-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+.problem-card{
+  min-height:220px;
+  display:flex;
+  flex-direction:column;
+}
+.problem-card .meta{
+  margin-top:auto;
+}
+.problem-card .problem-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+}
+.problem-number{
+  font-size:10px;
+  font-weight:900;
+  color:#8a95a4;
+}
+.problem-action{
+  display:flex;
+  gap:7px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.problem-link{
+  font-size:10px;
+  color:var(--blue);
+  text-decoration:none;
+}
+.problem-link:hover{text-decoration:underline}
+@media(max-width:1100px){
+  .eco-grid,.problem-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:720px){
+  .eco-grid,.problem-grid{grid-template-columns:1fr}
+}
+
+
+/* Microsoft Ecosystem + Problem Center visual polish */
+.eco-grid,
+.problem-grid{
+  overflow:visible;
+}
+
+.eco-card,
+.problem-card{
+  animation-duration:.65s;
+  animation-timing-function:cubic-bezier(.22,.61,.36,1);
+  animation-fill-mode:both;
+  will-change:transform,opacity;
+}
+
+@keyframes cardFromLeft{
+  from{opacity:0;transform:translateX(-42px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+@keyframes cardFromRight{
+  from{opacity:0;transform:translateX(42px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+@keyframes cardFromMiddle{
+  from{opacity:0;transform:translateY(22px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* 3-column state: left enters from left, right from right, center fades upward. */
+.eco-grid > :nth-child(3n+1),
+.problem-grid > :nth-child(3n+1){
+  animation-name:cardFromLeft;
+}
+
+.eco-grid > :nth-child(3n+2),
+.problem-grid > :nth-child(3n+2){
+  animation-name:cardFromMiddle;
+}
+
+.eco-grid > :nth-child(3n),
+.problem-grid > :nth-child(3n){
+  animation-name:cardFromRight;
+}
+
+/* Stagger */
+.eco-grid > :nth-child(1),.problem-grid > :nth-child(1){animation-delay:.04s}
+.eco-grid > :nth-child(2),.problem-grid > :nth-child(2){animation-delay:.09s}
+.eco-grid > :nth-child(3),.problem-grid > :nth-child(3){animation-delay:.14s}
+.eco-grid > :nth-child(4),.problem-grid > :nth-child(4){animation-delay:.19s}
+.eco-grid > :nth-child(5),.problem-grid > :nth-child(5){animation-delay:.24s}
+.eco-grid > :nth-child(6),.problem-grid > :nth-child(6){animation-delay:.29s}
+.eco-grid > :nth-child(7),.problem-grid > :nth-child(7){animation-delay:.34s}
+.eco-grid > :nth-child(8),.problem-grid > :nth-child(8){animation-delay:.39s}
+.eco-grid > :nth-child(9),.problem-grid > :nth-child(9){animation-delay:.44s}
+
+.eco-card .action-btn,
+.problem-card .action-btn{
+  border:1px solid #d3e3f5;
+  background:#edf5ff;
+  color:#0867c9;
+  border-radius:9px;
+  padding:8px 11px;
+  font-size:10px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.eco-card .action-btn:hover,
+.problem-card .action-btn:hover{
+  background:#e4f0ff;
+  border-color:#bed7f2;
+}
+
+.problem-card{
+  background:linear-gradient(180deg,#fff,#f9fbfd);
+}
+
+@media(max-width:1100px){
+  .eco-grid,
+  .problem-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  /* In 2-column layout: left column from left, right column from right. */
+  .eco-grid > :nth-child(odd),
+  .problem-grid > :nth-child(odd){
+    animation-name:cardFromLeft;
+  }
+
+  .eco-grid > :nth-child(even),
+  .problem-grid > :nth-child(even){
+    animation-name:cardFromRight;
+  }
+}
+
+@media(max-width:720px){
+  .eco-grid,
+  .problem-grid{
+    grid-template-columns:1fr;
+  }
+
+  .eco-grid > *,
+  .problem-grid > *{
+    animation-name:cardFromMiddle !important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .eco-card,
+  .problem-card{
+    animation:none !important;
+    transition:none !important;
+  }
+}
+
+
+/* Interactive BI map mockup */
+.bi-map-section{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 300px;
+  gap:15px;
+  align-items:stretch;
+}
+.bi-map-card{
+  padding:0;
+  overflow:hidden;
+}
+.bi-map-toolbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:12px 14px;
+  border-bottom:1px solid var(--border);
+  background:#fff;
+}
+.bi-map-tabs{
+  display:flex;
+  gap:7px;
+}
+.bi-map-tab{
+  border:1px solid var(--border);
+  background:#fff;
+  color:#617084;
+  border-radius:9px;
+  padding:7px 10px;
+  font-size:10px;
+  font-weight:800;
+}
+.bi-map-tab.active{
+  background:var(--blue-soft);
+  color:#0867c9;
+  border-color:#cfe2f8;
+}
+.bi-map-controls{
+  display:flex;
+  gap:5px;
+}
+.bi-map-controls button{
+  width:31px;
+  height:31px;
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:8px;
+  color:#526175;
+  font-weight:800;
+}
+.bi-map-stage{
+  height:390px;
+  background:linear-gradient(135deg,#eef6ff,#f2fbf8);
+  position:relative;
+  overflow:hidden;
+}
+.bi-map-svg{
+  width:100%;
+  height:100%;
+  display:block;
+  transform-origin:center;
+  transition:transform .25s ease;
+}
+.map-land{
+  fill:#dbe8f3;
+  stroke:#c6d6e4;
+  stroke-width:1.3;
+}
+.map-land.india{
+  fill:#d8f0e7;
+  stroke:#b1d9ca;
+}
+.map-gridline{
+  stroke:rgba(110,130,150,.18);
+  stroke-width:1;
+  stroke-dasharray:3 4;
+}
+.map-marker{
+  cursor:pointer;
+}
+.map-marker circle{
+  stroke:#fff;
+  stroke-width:2;
+  transition:transform .14s ease;
+}
+.map-marker:hover circle{
+  transform:scale(1.18);
+}
+.map-marker text{
+  font-size:9px;
+  font-weight:800;
+  fill:#344154;
+}
+.map-legend{
+  position:absolute;
+  left:14px;
+  bottom:14px;
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  background:rgba(255,255,255,.88);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:8px 9px;
+  backdrop-filter:blur(6px);
+}
+.map-legend span{
+  font-size:9px;
+  color:#5f6c7d;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+}
+.legend-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  display:inline-block;
+}
+.legend-blue{background:#0b69d1}.legend-green{background:#0b9b83}.legend-amber{background:#d98b00}
+.bi-map-detail{
+  min-height:390px;
+}
+.map-detail-visual{box-shadow:0 7px 20px rgba(17,34,52,.04);
+  border-radius:12px;
+  padding:16px;
+  background:#f7f9fc;
+  border:1px solid var(--border);
+  margin-top:12px;
+}
+.map-detail-value{
+  font-size:27px;
+  font-weight:850;
+  margin-top:6px;
+}
+.map-detail-label{
+  color:var(--muted);
+  font-size:10px;
+  margin-top:3px;
+}
+.map-note{
+  margin-top:10px;
+  color:#8a95a4;
+  font-size:9px;
+  line-height:1.45;
+}
+.map-view-hidden{
+  display:none;
+}
+@media(max-width:950px){
+  .bi-map-section{grid-template-columns:1fr}
+  .bi-map-detail{min-height:auto}
+}
+@media(max-width:650px){
+  .bi-map-stage{height:300px}
+}
+
+
+/* Map tooltip + pan cursor */
+.bi-map-stage{cursor:grab;user-select:none}
+.bi-map-stage.dragging{cursor:grabbing}
+.map-tooltip{
+  position:absolute;
+  display:none;
+  min-width:150px;
+  max-width:220px;
+  background:rgba(16,31,48,.96);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:10px;
+  padding:9px 10px;
+  font-size:10px;
+  line-height:1.45;
+  pointer-events:none;
+  z-index:4;
+  box-shadow:0 12px 28px rgba(17,30,47,.22);
+}
+.map-tooltip strong{display:block;font-size:11px;margin-bottom:2px}
+.map-tooltip span{display:block;color:#d8e4ef}
+.map-source-note{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  margin-top:10px;
+  padding:5px 8px;
+  border-radius:7px;
+  background:#f7f9fc;
+  border:1px solid var(--border);
+  color:#7a8697;
+  font-size:9px;
+}
+
+
+/* === V7 Visual Refresh: Microsoft Ecosystem + Business Intelligence === */
+:root{
+  --card-blue:#eef6ff;
+  --card-green:#eefaf6;
+  --card-purple:#f7f1ff;
+  --card-amber:#fff8e8;
+  --card-cyan:#eefbfe;
+  --card-red:#fff2f3;
+}
+
+.eco-card,
+.problem-card,
+#business-intel .grid-3 > .card,
+#business-intel .grid-2 > .card,
+#bi-overview .grid-2 > .card,
+#bi-regional .grid-2 > .card,
+#bi-segments .grid-3 > .card,
+#bi-entities .grid-3 > .card,
+#bi-risk .grid-2 > .card,
+#bi-finance .grid-3 > .card,
+#bi-sources .source-list > .card{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  transition:
+    transform .22s cubic-bezier(.22,.61,.36,1),
+    box-shadow .22s ease,
+    border-color .22s ease;
+}
+
+.eco-card::before,
+.problem-card::before,
+#business-intel .grid-3 > .card::before,
+#business-intel .grid-2 > .card::before,
+#bi-overview .grid-2 > .card::before,
+#bi-regional .grid-2 > .card::before,
+#bi-segments .grid-3 > .card::before,
+#bi-entities .grid-3 > .card::before,
+#bi-risk .grid-2 > .card::before,
+#bi-finance .grid-3 > .card::before,
+#bi-sources .source-list > .card::before{
+  content:"";
+  position:absolute;
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  right:-58px;
+  top:-62px;
+  background:rgba(11,105,209,.07);
+  z-index:-1;
+  pointer-events:none;
+  transition:transform .25s ease;
+}
+
+.eco-card:nth-child(3n+2)::before,
+.problem-card:nth-child(3n+2)::before,
+#business-intel .grid-3 > .card:nth-child(3n+2)::before,
+#bi-segments .grid-3 > .card:nth-child(3n+2)::before,
+#bi-finance .grid-3 > .card:nth-child(3n+2)::before{
+  background:rgba(11,155,131,.09);
+}
+
+.eco-card:nth-child(3n)::before,
+.problem-card:nth-child(3n)::before,
+#business-intel .grid-3 > .card:nth-child(3n)::before,
+#bi-segments .grid-3 > .card:nth-child(3n)::before,
+#bi-finance .grid-3 > .card:nth-child(3n)::before{
+  background:rgba(137,85,220,.09);
+}
+
+.eco-card:hover,
+.problem-card:hover,
+#business-intel .grid-3 > .card:hover,
+#business-intel .grid-2 > .card:hover,
+#bi-overview .grid-2 > .card:hover,
+#bi-regional .grid-2 > .card:hover,
+#bi-segments .grid-3 > .card:hover,
+#bi-entities .grid-3 > .card:hover,
+#bi-risk .grid-2 > .card:hover,
+#bi-finance .grid-3 > .card:hover,
+#bi-sources .source-list > .card:hover{
+  transform:translateY(-4px);
+  border-color:#c9d8e8;
+  box-shadow:0 16px 40px rgba(22,38,59,.10);
+}
+
+.eco-card:hover::before,
+.problem-card:hover::before,
+#business-intel .grid-3 > .card:hover::before,
+#business-intel .grid-2 > .card:hover::before,
+#bi-overview .grid-2 > .card:hover::before,
+#bi-regional .grid-2 > .card:hover::before,
+#bi-segments .grid-3 > .card:hover::before,
+#bi-entities .grid-3 > .card:hover::before,
+#bi-risk .grid-2 > .card:hover::before,
+#bi-finance .grid-3 > .card:hover::before,
+#bi-sources .source-list > .card:hover::before{
+  transform:scale(1.35);
+}
+
+#business-intel .hero{
+  box-shadow:0 18px 45px rgba(12,62,110,.12);
+}
+
+#business-intel .metric,
+#bi-overview .metric{
+  background:linear-gradient(135deg,#ffffff 0%,#f6f9fd 100%);
+}
+
+#business-intel .grid-3 > .card:nth-child(3n+1),
+#bi-segments .grid-3 > .card:nth-child(3n+1),
+#bi-finance .grid-3 > .card:nth-child(3n+1){
+  background:linear-gradient(180deg,#fff 0%,var(--card-blue) 100%);
+  border-color:#d8e7f7;
+}
+#business-intel .grid-3 > .card:nth-child(3n+2),
+#bi-segments .grid-3 > .card:nth-child(3n+2),
+#bi-finance .grid-3 > .card:nth-child(3n+2){
+  background:linear-gradient(180deg,#fff 0%,var(--card-green) 100%);
+  border-color:#d7ebe4;
+}
+#business-intel .grid-3 > .card:nth-child(3n),
+#bi-segments .grid-3 > .card:nth-child(3n),
+#bi-finance .grid-3 > .card:nth-child(3n){
+  background:linear-gradient(180deg,#fff 0%,var(--card-purple) 100%);
+  border-color:#e3d9f2;
+}
+
+#business-intel .grid-2 > .card:nth-child(odd),
+#bi-overview .grid-2 > .card:nth-child(odd),
+#bi-regional .grid-2 > .card:nth-child(odd),
+#bi-risk .grid-2 > .card:nth-child(odd){
+  background:linear-gradient(180deg,#fff 0%,#f3f8ff 100%);
+}
+#business-intel .grid-2 > .card:nth-child(even),
+#bi-overview .grid-2 > .card:nth-child(even),
+#bi-regional .grid-2 > .card:nth-child(even),
+#bi-risk .grid-2 > .card:nth-child(even){
+  background:linear-gradient(180deg,#fff 0%,#f3fbf8 100%);
+}
+
+#bi-sources .source-list > .card:nth-child(3n+1){
+  background:linear-gradient(180deg,#fff 0%,#f2f8ff 100%);
+}
+#bi-sources .source-list > .card:nth-child(3n+2){
+  background:linear-gradient(180deg,#fff 0%,#f8f3ff 100%);
+}
+#bi-sources .source-list > .card:nth-child(3n){
+  background:linear-gradient(180deg,#fff 0%,#f2fbf8 100%);
+}
+
+#business-intel h3,
+#bi-overview h3,
+#bi-regional h3,
+#bi-segments h3,
+#bi-entities h3,
+#bi-risk h3,
+#bi-finance h3,
+#bi-sources h3{
+  color:#1d2a3b;
+}
+
+.eco-badge,
+.source-badge{
+  box-shadow:0 3px 10px rgba(21,39,60,.04);
+}
+
+.bi-map-section{
+  filter:drop-shadow(0 9px 22px rgba(22,38,59,.035));
+}
+
+/* Entry animation classes */
+.reveal-left,
+.reveal-right,
+.reveal-up{
+  opacity:0;
+  animation-duration:.68s;
+  animation-fill-mode:both;
+  animation-timing-function:cubic-bezier(.22,.61,.36,1);
+}
+
+.reveal-left.is-visible{animation-name:revealFromLeft}
+.reveal-right.is-visible{animation-name:revealFromRight}
+.reveal-up.is-visible{animation-name:revealFromUp}
+
+@keyframes revealFromLeft{
+  from{opacity:0;transform:translateX(-34px)}
+  to{opacity:1;transform:translateX(0)}
+}
+@keyframes revealFromRight{
+  from{opacity:0;transform:translateX(34px)}
+  to{opacity:1;transform:translateX(0)}
+}
+@keyframes revealFromUp{
+  from{opacity:0;transform:translateY(24px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .reveal-left,
+  .reveal-right,
+  .reveal-up{
+    opacity:1 !important;
+    animation:none !important;
+  }
+}
+
+
+/* Overview module card grid */
+.overview-module-section{margin-top:30px}
+.overview-module-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:15px}
+.overview-module-head h2{font-size:22px;letter-spacing:-.25px}
+.overview-module-head p{margin-top:5px;color:var(--muted);font-size:13px;line-height:1.5}
+.overview-module-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:16px;
+}
+.overview-module-card{
+  position:relative;
+  min-height:215px;
+  display:flex;
+  flex-direction:column;
+  padding:18px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:0 7px 24px rgba(20,36,56,.045);
+  overflow:hidden;
+  isolation:isolate;
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+.overview-module-card::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  width:100%;
+  height:4px;
+  background:var(--module-accent,#0b69d1);
+}
+.overview-module-card::after{
+  content:"";
+  position:absolute;
+  right:-42px;
+  top:-45px;
+  width:125px;
+  height:125px;
+  border-radius:50%;
+  background:color-mix(in srgb,var(--module-accent,#0b69d1) 9%,white);
+  z-index:-1;
+}
+.overview-module-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 16px 36px rgba(20,36,56,.11);
+  border-color:#cbd8e6;
+}
+.overview-module-card:focus-within{
+  outline:3px solid rgba(11,105,209,.22);
+  outline-offset:2px;
+}
+.overview-module-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+}
+.overview-module-icon{
+  width:50px;
+  height:50px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  font-size:22px;
+  background:color-mix(in srgb,var(--module-accent,#0b69d1) 11%,white);
+  border:1px solid color-mix(in srgb,var(--module-accent,#0b69d1) 22%,white);
+  color:var(--module-accent,#0b69d1);
+}
+.overview-module-card h3{
+  margin-top:15px;
+  font-size:16px;
+  line-height:1.3;
+}
+.overview-module-card p{
+  margin-top:7px;
+  color:#6e7a8b;
+  font-size:12px;
+  line-height:1.55;
+}
+.overview-module-tag{
+  display:inline-flex;
+  width:max-content;
+  padding:5px 8px;
+  border-radius:999px;
+  background:#f3f5f8;
+  color:#5d697a;
+  border:1px solid #e7ebf0;
+  font-size:9px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.35px;
+}
+.overview-module-footer{
+  margin-top:auto;
+  padding-top:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.overview-module-meta{color:#8a95a4;font-size:10px}
+.overview-module-action{
+  min-height:34px;
+  border:1px solid color-mix(in srgb,var(--module-accent,#0b69d1) 25%,white);
+  background:color-mix(in srgb,var(--module-accent,#0b69d1) 9%,white);
+  color:var(--module-accent,#0b69d1);
+  border-radius:9px;
+  padding:7px 10px;
+  font-size:10px;
+  font-weight:800;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+.overview-module-action:hover{
+  background:color-mix(in srgb,var(--module-accent,#0b69d1) 15%,white);
+  border-color:color-mix(in srgb,var(--module-accent,#0b69d1) 34%,white);
+}
+.overview-module-action:focus-visible{
+  outline:3px solid rgba(11,105,209,.28);
+  outline-offset:2px;
+}
+.overview-module-card.accent-blue{--module-accent:#0b69d1}
+.overview-module-card.accent-green{--module-accent:#0b8f79}
+.overview-module-card.accent-purple{--module-accent:#7755c9}
+.overview-module-card.accent-amber{--module-accent:#ad7200}
+.overview-module-card.accent-red{--module-accent:#c4464e}
+.overview-module-card.accent-cyan{--module-accent:#147f96}
+.overview-module-card.accent-indigo{--module-accent:#4b63b8}
+.overview-module-card.accent-teal{--module-accent:#0a8b72}
+@keyframes overviewCardIn{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.overview-module-card{
+  animation:overviewCardIn .52s cubic-bezier(.22,.61,.36,1) both;
+}
+.overview-module-card:nth-child(1){animation-delay:.02s}
+.overview-module-card:nth-child(2){animation-delay:.06s}
+.overview-module-card:nth-child(3){animation-delay:.10s}
+.overview-module-card:nth-child(4){animation-delay:.14s}
+.overview-module-card:nth-child(5){animation-delay:.18s}
+.overview-module-card:nth-child(6){animation-delay:.22s}
+.overview-module-card:nth-child(7){animation-delay:.26s}
+.overview-module-card:nth-child(8){animation-delay:.30s}
+.overview-module-card:nth-child(9){animation-delay:.34s}
+.overview-module-card:nth-child(10){animation-delay:.38s}
+.overview-module-card:nth-child(11){animation-delay:.42s}
+.overview-module-card:nth-child(12){animation-delay:.46s}
+@media(max-width:620px){
+  .overview-module-head{align-items:flex-start;flex-direction:column}
+  .overview-module-grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  .overview-module-card{animation:none !important;transition:none}
+}
+
+
+/* BACKGROUND-ONLY REFINEMENT
+   Keep all existing cards/grid colors, sections, content, layout, and interactions unchanged. */
+html, body{
+  background:#dfeaf5;
+}
+
+body{
+  background:
+    radial-gradient(1200px 720px at 92% 0%, rgba(66,151,214,.20), transparent 60%),
+    radial-gradient(1000px 700px at 68% 48%, rgba(137,105,211,.14), transparent 62%),
+    radial-gradient(1050px 720px at 10% 92%, rgba(236,139,102,.14), transparent 62%),
+    linear-gradient(135deg,#e3eef8 0%,#ebeaf3 46%,#f4e9df 100%);
+}
+
+/* Main canvas only: slightly deeper than the previous version so the white cards read clearly. */
+.main,
+main,
+.page{
+  background:transparent;
+}
+
+.main,
+main{
+  position:relative;
+  overflow:hidden;
+}
+
+.main::before,
+main::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background:
+    radial-gradient(820px 500px at 98% 13%, rgba(33,145,210,.14), transparent 64%),
+    radial-gradient(820px 530px at 52% 84%, rgba(164,111,212,.10), transparent 66%),
+    radial-gradient(850px 540px at 6% 72%, rgba(243,135,91,.09), transparent 66%);
+}
+
+.main > *,
+main > *{
+  position:relative;
+  z-index:1;
+}
+
+/* Subtle diagonal spectrum stroke for the background only. */
+.main::after,
+main::after{
+  content:"";
+  position:absolute;
+  top:-14%;
+  right:8%;
+  width:3px;
+  height:128%;
+  pointer-events:none;
+  z-index:0;
+  opacity:.48;
+  transform:rotate(-22deg);
+  border-radius:999px;
+  background:linear-gradient(
+    180deg,
+    rgba(65,116,218,.12),
+    rgba(101,87,216,.55) 28%,
+    rgba(190,83,199,.46) 52%,
+    rgba(239,116,94,.40) 73%,
+    rgba(244,184,72,.34)
+  );
+}
+
+@media (max-width:760px){
+  body{
+    background:
+      radial-gradient(760px 480px at 92% 0%, rgba(66,151,214,.16), transparent 64%),
+      radial-gradient(700px 460px at 10% 92%, rgba(236,139,102,.11), transparent 66%),
+      linear-gradient(135deg,#e7f0f8 0%,#eeedf4 52%,#f6ede5 100%);
+  }
+  .main::after,
+  main::after{
+    right:4%;
+    opacity:.28;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+}
+
+
+/* MICROSOFT-STYLE CARD GRID REFINEMENT
+   Keep structure, spacing, borders, hover behavior, backend, and data unchanged.
+   Uses a restrained blue / green / purple accent palette. */
+:root{
+  --grid-blue:#2563c7;
+  --grid-green:#16855d;
+  --grid-purple:#6856c9;
+  --grid-blue-soft:#f3f8ff;
+  --grid-green-soft:#f1faf6;
+  --grid-purple-soft:#f6f3ff;
+}
+
+/* Shared grid rhythm remains intact */
+.grid-2,
+.grid-3,
+.grid-4,
+.overview-module-grid{
+  align-items:stretch;
+}
+
+/* Light card surfaces with understated accent rails */
+.grid-2 > .card,
+.grid-3 > .card,
+.grid-4 > .card,
+.agent-card,
+.overview-module-card{
+  border:1px solid #dfe6ee;
+  border-top:3px solid var(--grid-blue);
+  background:#fff;
+  box-shadow:0 7px 24px rgba(16,34,54,.055);
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+
+.grid-2 > .card:nth-child(3n+2),
+.grid-3 > .card:nth-child(3n+2),
+.grid-4 > .card:nth-child(3n+2),
+.agent-card:nth-child(3n+2){
+  border-top-color:var(--grid-green);
+}
+
+.grid-2 > .card:nth-child(3n+3),
+.grid-3 > .card:nth-child(3n+3),
+.grid-4 > .card:nth-child(3n+3),
+.agent-card:nth-child(3n+3){
+  border-top-color:var(--grid-purple);
+}
+
+/* Very light, readable tint behind the content */
+.grid-2 > .card:nth-child(3n+1),
+.grid-3 > .card:nth-child(3n+1),
+.grid-4 > .card:nth-child(3n+1),
+.agent-card:nth-child(3n+1){
+  background:linear-gradient(180deg,var(--grid-blue-soft),#fff 38%);
+}
+
+.grid-2 > .card:nth-child(3n+2),
+.grid-3 > .card:nth-child(3n+2),
+.grid-4 > .card:nth-child(3n+2),
+.agent-card:nth-child(3n+2){
+  background:linear-gradient(180deg,var(--grid-green-soft),#fff 38%);
+}
+
+.grid-2 > .card:nth-child(3n+3),
+.grid-3 > .card:nth-child(3n+3),
+.grid-4 > .card:nth-child(3n+3),
+.agent-card:nth-child(3n+3){
+  background:linear-gradient(180deg,var(--grid-purple-soft),#fff 38%);
+}
+
+/* Preserve and slightly clarify hover treatment */
+.grid-2 > .card:hover,
+.grid-3 > .card:hover,
+.grid-4 > .card:hover,
+.agent-card:hover,
+.overview-module-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 14px 32px rgba(16,34,54,.095);
+  border-color:#cdd8e4;
+}
+
+/* Agent/card icons use the same restrained section accent */
+.agent-card:nth-child(3n+1) .icon,
+.grid-2 > .card:nth-child(3n+1) .icon,
+.grid-3 > .card:nth-child(3n+1) .icon,
+.grid-4 > .card:nth-child(3n+1) .icon{
+  background:#edf5ff;
+  color:var(--grid-blue);
+}
+
+.agent-card:nth-child(3n+2) .icon,
+.grid-2 > .card:nth-child(3n+2) .icon,
+.grid-3 > .card:nth-child(3n+2) .icon,
+.grid-4 > .card:nth-child(3n+2) .icon{
+  background:#edf8f3;
+  color:var(--grid-green);
+}
+
+.agent-card:nth-child(3n+3) .icon,
+.grid-2 > .card:nth-child(3n+3) .icon,
+.grid-3 > .card:nth-child(3n+3) .icon,
+.grid-4 > .card:nth-child(3n+3) .icon{
+  background:#f2efff;
+  color:var(--grid-purple);
+}
+
+/* Simple tags: clean and low-saturation */
+.agent-card .tag,
+.grid-2 > .card .tag,
+.grid-3 > .card .tag,
+.grid-4 > .card .tag{
+  background:#f5f7fa;
+  color:#59687a;
+  border:1px solid #e5eaf0;
+  font-weight:700;
+}
+
+/* Overview module grid — same 3-color language, less saturated than before */
+.overview-module-card:nth-child(3n+1){
+  --module-accent:var(--grid-blue);
+  background:linear-gradient(180deg,#f5f9ff,#fff 40%);
+}
+.overview-module-card:nth-child(3n+2){
+  --module-accent:var(--grid-green);
+  background:linear-gradient(180deg,#f4faf7,#fff 40%);
+}
+.overview-module-card:nth-child(3n+3){
+  --module-accent:var(--grid-purple);
+  background:linear-gradient(180deg,#f8f5ff,#fff 40%);
+}
+.overview-module-card:nth-child(3n+1) .overview-module-icon{
+  background:#edf5ff;
+}
+.overview-module-card:nth-child(3n+2) .overview-module-icon{
+  background:#edf8f3;
+}
+.overview-module-card:nth-child(3n+3) .overview-module-icon{
+  background:#f2efff;
+}
+.overview-module-card .overview-module-action{
+  background:#f4f8fd;
+}
+.overview-module-card:nth-child(3n+2) .overview-module-action{
+  background:#f0f8f4;
+}
+.overview-module-card:nth-child(3n+3) .overview-module-action{
+  background:#f5f2fd;
+}
+
+/* Metrics: clean emphasis, no saturated blocks */
+.grid-4 .metric{
+  background:#fff;
+}
+.grid-4 .metric:nth-child(3n+1){
+  border-top:3px solid var(--grid-blue);
+}
+.grid-4 .metric:nth-child(3n+2){
+  border-top:3px solid var(--grid-green);
+}
+.grid-4 .metric:nth-child(3n+3){
+  border-top:3px solid var(--grid-purple);
+}
+
+/* Keep contrast strong on small screens */
+@media(max-width:760px){
+  .grid-2 > .card,
+  .grid-3 > .card,
+  .grid-4 > .card,
+  .agent-card,
+  .overview-module-card{
+    box-shadow:0 6px 20px rgba(16,34,54,.055);
+  }
+}
+
+/* Reduced motion: retain readability and avoid unnecessary motion */
+@media(prefers-reduced-motion:reduce){
+  .grid-2 > .card,
+  .grid-3 > .card,
+  .grid-4 > .card,
+  .agent-card,
+  .overview-module-card{
+    transition:none!important;
+  }
+}
+
+
+/* MICROSOFT-STYLE GRID COLORS ONLY
+   Keep the current Rural Guardian Intelligence Platform layout, background, cards, data, structure,
+   spacing, typography, and hover behavior unchanged. */
+:root{
+  --ms-blue:#0078D4;
+  --ms-green:#107C10;
+  --ms-yellow:#FFB900;
+  --ms-red:#D83B01;
+}
+
+/* Four-color sequence for existing card grids */
+.grid-2 > .card:nth-child(4n+1),
+.grid-3 > .card:nth-child(4n+1),
+.grid-4 > .card:nth-child(4n+1),
+.agent-card:nth-child(4n+1),
+.overview-module-card:nth-child(4n+1){
+  border-top-color:var(--ms-blue)!important;
+  --module-accent:var(--ms-blue);
+}
+
+.grid-2 > .card:nth-child(4n+2),
+.grid-3 > .card:nth-child(4n+2),
+.grid-4 > .card:nth-child(4n+2),
+.agent-card:nth-child(4n+2),
+.overview-module-card:nth-child(4n+2){
+  border-top-color:var(--ms-green)!important;
+  --module-accent:var(--ms-green);
+}
+
+.grid-2 > .card:nth-child(4n+3),
+.grid-3 > .card:nth-child(4n+3),
+.grid-4 > .card:nth-child(4n+3),
+.agent-card:nth-child(4n+3),
+.overview-module-card:nth-child(4n+3){
+  border-top-color:var(--ms-yellow)!important;
+  --module-accent:var(--ms-yellow);
+}
+
+.grid-2 > .card:nth-child(4n+4),
+.grid-3 > .card:nth-child(4n+4),
+.grid-4 > .card:nth-child(4n+4),
+.agent-card:nth-child(4n+4),
+.overview-module-card:nth-child(4n+4){
+  border-top-color:var(--ms-red)!important;
+  --module-accent:var(--ms-red);
+}
+
+/* Keep card surfaces light; only accent tint follows the grid color */
+.grid-2 > .card:nth-child(4n+1),
+.grid-3 > .card:nth-child(4n+1),
+.grid-4 > .card:nth-child(4n+1),
+.agent-card:nth-child(4n+1){
+  background:linear-gradient(180deg,#f4f9ff,#fff 38%);
+}
+.grid-2 > .card:nth-child(4n+2),
+.grid-3 > .card:nth-child(4n+2),
+.grid-4 > .card:nth-child(4n+2),
+.agent-card:nth-child(4n+2){
+  background:linear-gradient(180deg,#f3faf5,#fff 38%);
+}
+.grid-2 > .card:nth-child(4n+3),
+.grid-3 > .card:nth-child(4n+3),
+.grid-4 > .card:nth-child(4n+3),
+.agent-card:nth-child(4n+3){
+  background:linear-gradient(180deg,#fffaf0,#fff 38%);
+}
+.grid-2 > .card:nth-child(4n+4),
+.grid-3 > .card:nth-child(4n+4),
+.grid-4 > .card:nth-child(4n+4),
+.agent-card:nth-child(4n+4){
+  background:linear-gradient(180deg,#fff6f2,#fff 38%);
+}
+
+/* Overview module grid: subtle icon/action color follows the same four accents */
+.overview-module-card{
+  border-top-width:3px!important;
+}
+.overview-module-card:nth-child(4n+1) .overview-module-icon,
+.overview-module-card:nth-child(4n+1) .overview-module-action{
+  background:#edf6ff!important;
+  border-color:#d6e9fb!important;
+  color:var(--ms-blue)!important;
+}
+.overview-module-card:nth-child(4n+2) .overview-module-icon,
+.overview-module-card:nth-child(4n+2) .overview-module-action{
+  background:#edf8f2!important;
+  border-color:#d8ecdf!important;
+  color:var(--ms-green)!important;
+}
+.overview-module-card:nth-child(4n+3) .overview-module-icon,
+.overview-module-card:nth-child(4n+3) .overview-module-action{
+  background:#fff8e8!important;
+  border-color:#f5e7bd!important;
+  color:#9a6900!important;
+}
+.overview-module-card:nth-child(4n+4) .overview-module-icon,
+.overview-module-card:nth-child(4n+4) .overview-module-action{
+  background:#fff2ed!important;
+  border-color:#f5d8ce!important;
+  color:var(--ms-red)!important;
+}
+
+/* Keep tags neutral/readable */
+.grid-2 > .card .tag,
+.grid-3 > .card .tag,
+.grid-4 > .card .tag,
+.agent-card .tag,
+.overview-module-card .overview-module-tag{
+  background:#f6f8fa!important;
+  border-color:#e4e9ef!important;
+  color:#59687a!important;
+}
+
+/* No extra saturation on hover */
+.grid-2 > .card:hover,
+.grid-3 > .card:hover,
+.grid-4 > .card:hover,
+.agent-card:hover,
+.overview-module-card:hover{
+  filter:none;
+}
+
+/* Mobile remains one column with the same accent rotation */
+@media(max-width:800px){
+  .grid-2 > .card,
+  .grid-3 > .card,
+  .grid-4 > .card,
+  .agent-card,
+  .overview-module-card{
+    border-top-width:3px!important;
+  }
+}
+
+
+/* MICROSOFT-STYLE COLOR TREATMENT FOR THE SEPARATE ECOSYSTEM GRID ONLY
+   Layout/content/background remain unchanged. */
+.eco-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:15px;
+}
+
+.eco-card{
+  border-top:3px solid #0078D4 !important;
+  background:linear-gradient(180deg,#f3f8ff 0%,#ffffff 42%) !important;
+  border-color:#dfe7ef !important;
+  box-shadow:0 5px 15px rgba(18,34,54,.065);
+}
+
+.eco-card:nth-child(4n+1){
+  --eco-accent:#0078D4;
+  border-top-color:#0078D4 !important;
+  background:linear-gradient(180deg,#f1f7ff 0%,#ffffff 44%) !important;
+}
+.eco-card:nth-child(4n+2){
+  --eco-accent:#107C10;
+  border-top-color:#107C10 !important;
+  background:linear-gradient(180deg,#f2faf5 0%,#ffffff 44%) !important;
+}
+.eco-card:nth-child(4n+3){
+  --eco-accent:#FFB900;
+  border-top-color:#FFB900 !important;
+  background:linear-gradient(180deg,#fff9ea 0%,#ffffff 44%) !important;
+}
+.eco-card:nth-child(4n+4){
+  --eco-accent:#D83B01;
+  border-top-color:#D83B01 !important;
+  background:linear-gradient(180deg,#fff4ef 0%,#ffffff 44%) !important;
+}
+
+/* Existing circular visual accent follows the same four-color cycle */
+.eco-card::before{
+  background:color-mix(in srgb,var(--eco-accent,#0078D4) 9%,white) !important;
+}
+.eco-card:nth-child(4n+1)::before{
+  background:rgba(0,120,212,.09) !important;
+}
+.eco-card:nth-child(4n+2)::before{
+  background:rgba(16,124,16,.09) !important;
+}
+.eco-card:nth-child(4n+3)::before{
+  background:rgba(255,185,0,.12) !important;
+}
+.eco-card:nth-child(4n+4)::before{
+  background:rgba(216,59,1,.09) !important;
+}
+
+.eco-icon{
+  background:#fff !important;
+  border-color:#dfe6ee !important;
+  box-shadow:0 4px 13px rgba(20,35,55,.045);
+}
+.eco-card:nth-child(4n+1) .eco-icon{
+  color:#0078D4;
+  background:#edf6ff !important;
+  border-color:#d5e8fa !important;
+}
+.eco-card:nth-child(4n+2) .eco-icon{
+  color:#107C10;
+  background:#edf8f1 !important;
+  border-color:#d8ecd9 !important;
+}
+.eco-card:nth-child(4n+3) .eco-icon{
+  color:#976e00;
+  background:#fff8e7 !important;
+  border-color:#f2e3b8 !important;
+}
+.eco-card:nth-child(4n+4) .eco-icon{
+  color:#D83B01;
+  background:#fff2ec !important;
+  border-color:#f1d8cc !important;
+}
+
+.eco-badge{
+  background:#fff !important;
+  border-color:#e0e6ed !important;
+  color:#657386 !important;
+}
+
+.eco-card .tag{
+  background:#f5f7fa !important;
+  border:1px solid #e5eaf0 !important;
+  color:#5f6e80 !important;
+}
+
+.eco-card .action-btn{
+  background:#fff !important;
+  border:1px solid #d7e0e9 !important;
+  color:#42546a !important;
+}
+
+.eco-card:nth-child(4n+1) .action-btn:hover{
+  background:#edf6ff !important;
+  color:#0078D4 !important;
+  border-color:#cfe4f8 !important;
+}
+.eco-card:nth-child(4n+2) .action-btn:hover{
+  background:#edf8f1 !important;
+  color:#107C10 !important;
+  border-color:#d1e7d4 !important;
+}
+.eco-card:nth-child(4n+3) .action-btn:hover{
+  background:#fff8e7 !important;
+  color:#976e00 !important;
+  border-color:#f1e0b1 !important;
+}
+.eco-card:nth-child(4n+4) .action-btn:hover{
+  background:#fff2ec !important;
+  color:#D83B01 !important;
+  border-color:#efd4c7 !important;
+}
+
+.eco-card:hover{
+  border-color:#cbd7e3 !important;
+  box-shadow:0 14px 32px rgba(18,34,54,.095);
+  transform:translateY(-4px);
+}
+
+@media(max-width:1100px){
+  .eco-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media(max-width:720px){
+  .eco-grid{grid-template-columns:1fr;}
+}
+
+
+/* =========================================================
+   MICROSOFT ECOSYSTEM CENTER — MOTION
+   Inspired by the supplied motion direction, integrated into
+   the existing ecosystem cards without changing layout.
+   ========================================================= */
+
+.ecosystem-center{
+  max-width:100%;
+}
+
+.ecosystem-center .eco-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:15px;
+}
+
+.ecosystem-center .eco-card{
+  transform:translateY(0);
+  opacity:1;
+  will-change:transform,opacity;
+  transition:transform 170ms ease, box-shadow 170ms ease, border-color 170ms ease;
+}
+
+.ecosystem-center .eco-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 11px 25px rgba(23,39,60,.105);
+}
+
+/* Entry directions */
+.ecosystem-center .eco-card.from-top{
+  animation:ecoFromTop 430ms cubic-bezier(.22,.75,.28,1) both;
+}
+.ecosystem-center .eco-card.from-left{
+  animation:ecoFromLeft 430ms cubic-bezier(.22,.75,.28,1) both;
+}
+.ecosystem-center .eco-card.from-right{
+  animation:ecoFromRight 430ms cubic-bezier(.22,.75,.28,1) both;
+}
+
+/* Small cascade delay so cards settle one-by-one */
+.ecosystem-center .eco-card:nth-child(1){animation-delay:40ms}
+.ecosystem-center .eco-card:nth-child(2){animation-delay:90ms}
+.ecosystem-center .eco-card:nth-child(3){animation-delay:140ms}
+.ecosystem-center .eco-card:nth-child(4){animation-delay:190ms}
+.ecosystem-center .eco-card:nth-child(5){animation-delay:240ms}
+.ecosystem-center .eco-card:nth-child(6){animation-delay:290ms}
+.ecosystem-center .eco-card:nth-child(7){animation-delay:340ms}
+.ecosystem-center .eco-card:nth-child(8){animation-delay:390ms}
+.ecosystem-center .eco-card:nth-child(9){animation-delay:440ms}
+.ecosystem-center .eco-card:nth-child(10){animation-delay:490ms}
+.ecosystem-center .eco-card:nth-child(11){animation-delay:540ms}
+.ecosystem-center .eco-card:nth-child(12){animation-delay:590ms}
+
+@keyframes ecoFromTop{
+  from{transform:translateY(-18px);opacity:0}
+  to{transform:translateY(0);opacity:1}
+}
+@keyframes ecoFromLeft{
+  from{transform:translateX(-18px);opacity:0}
+  to{transform:translateX(0);opacity:1}
+}
+@keyframes ecoFromRight{
+  from{transform:translateX(18px);opacity:0}
+  to{transform:translateX(0);opacity:1}
+}
+
+/* Keep motion subtle and accessible */
+@media(max-width:1000px){
+  .ecosystem-center .eco-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+@media(max-width:700px){
+  .ecosystem-center .eco-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .ecosystem-center .eco-card{
+    animation:none!important;
+    transition:none!important;
+    transform:none!important;
+    opacity:1!important;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="brandmark">RG</div><div><b>Rural Guardian Intelligence Platform</b><small>Intelligence & Safety Platform</small></div></div>
+  <div class="nav-label">Platform</div>
+  <nav class="nav">
+    <button data-view="overview" class="active">⌂ <span>Overview</span></button>
+    <button data-view="command">◫ <span>Command Center</span></button>
+    <button data-view="agents">✦ <span>Agent Hub</span></button>
+    <button data-view="copilot">◉ <span>AI Copilot</span></button>
+    <button data-view="alerts">⚠ <span>Alerts & Safety</span></button>
+    <button data-view="knowledge">▣ <span>Knowledge & RAG</span></button>
+    <button data-view="analytics">▥ <span>Analytics & Impact</span></button>
+    <button data-view="problem-center">◈ <span>Microsoft Problem Center</span></button>
+  </nav>
+  <div class="nav-label">Specialized Agents</div>
+  <nav class="nav">
+    <button class="mini" data-view="agent-agri">🌾 Agriculture Guardian</button>
+    <button class="mini" data-view="agent-disaster">🚨 Disaster Response</button>
+    <button class="mini" data-view="agent-health">❤️ Health Safety</button>
+    <button class="mini" data-view="agent-education">📚 Education</button>
+    <button class="mini" data-view="agent-business">💼 Rural Business</button>
+    <button class="mini" data-view="agent-abuse">🛡 Voucher & License Abuse Monitor</button>
+  </nav>
+  <div class="nav-label">Microsoft Ecosystem</div>
+  <nav class="nav">
+    <button data-view="microsoft">⊞ Microsoft Stack</button>
+    <button data-view="ms-ecosystem">◉ Microsoft Ecosystem Center</button>
+    <button data-view="business-intel">◫ Microsoft Business Intelligence</button>
+    <button data-view="problem-center">◈ Problem Center</button>
+    <button data-view="certifications">🎓 Certification Hub</button>
+    <button data-view="vouchers">🎟 Voucher Protection</button>
+  </nav>
+
+  <div class="nav-label">Microsoft Business Intelligence</div>
+  <nav class="nav">
+    <button class="mini" data-view="bi-overview">◎ Global Overview</button>
+    <button class="mini" data-view="bi-regional">◌ Regional Overview</button>
+    <button class="mini" data-view="bi-segments">▥ Product & Segment</button>
+    <button class="mini" data-view="bi-entities">⌂ Entities & Locations</button>
+    <button class="mini" data-view="bi-risk">⚠ Risk & Compliance</button>
+    <button class="mini" data-view="bi-finance">◫ Finance & Usage Anomalies</button>
+    <button class="mini" data-view="bi-sources">↗ Data Sources</button>
+  </nav>
+
+  <div class="nav-label">Microsoft Risk & Reliability</div>
+  <nav class="nav">
+    <button class="mini" data-view="risk-overview">◈ Risk Overview</button>
+    <button class="mini" data-view="risk-identity">🔐 Identity & Access</button>
+    <button class="mini" data-view="risk-privacy">🛡 Data Privacy & Compliance</button>
+    <button class="mini" data-view="risk-api">⌁ API & Rate Limits</button>
+    <button class="mini" data-view="risk-audit">◫ Monitoring & Audit Logs</button>
+    <button class="mini" data-view="risk-outage">◒ Outages & Provider Limits</button>
+    <button class="mini" data-view="risk-browser">◩ Browser & Compatibility</button>
+    <button class="mini" data-view="risk-prompt">✦ Shared Risk Agent</button>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="nav">
+      <button data-view="profile">◉ Profile Dashboard</button>
+      <button data-view="admin">⚙ Admin & Governance</button>
+      <button data-view="settings">☼ Settings</button>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div class="search">⌕ Search agents, alerts, credentials, knowledge...</div>
+  <div class="topright">
+    <span class="chip">EN / हिन्दी</span><span class="chip keep">● Demo System</span><div class="avatar">SK</div>
+  </div>
+</header>
+
+<!-- OVERVIEW -->
+<section class="view active" id="overview">
+<div class="page">
+  <div class="hero">
+    <div class="eyebrow">Unified rural intelligence platform</div>
+    <h1>One AI platform for safer, smarter rural communities.</h1>
+    <p>Connect specialist agents, grounded knowledge, safety controls, Microsoft services, community operations and personalized workspaces in one product.</p>
+    <div class="hero-actions"><button class="btn primary" data-go="copilot">Open AI Copilot →</button><button class="btn" data-go="agents">Explore Agent Hub</button></div>
+    <div class="pills"><span class="pill">6 Specialist Agents</span><span class="pill">Knowledge</span><span class="pill">Safety</span><span class="pill">Microsoft-ready setup</span><span class="pill">Hindi / English</span></div>
+  </div>
+
+  <div class="section grid-4">
+    <div class="card metric"><div class="kicker">Active agents</div><div class="num">06</div><div class="delta">multi-agent workspace</div></div>
+    <div class="card metric"><div class="kicker">Safety cases</div><div class="num">17</div><div class="delta">demo metric</div></div>
+    <div class="card metric"><div class="kicker">Knowledge items</div><div class="num">326</div><div class="delta">Knowledge demo</div></div>
+    <div class="card metric"><div class="kicker">Platform health</div><div class="num">99.9%</div><div class="delta">demo metric</div></div>
+    <div class="card metric" style="display:none"><div class="kicker">Microsoft integrations</div><div class="num">15+</div></div>
+  </div>
+
+  <div class="section feature card">
+    <div class="feature-main"><div class="eyebrow" style="color:#0b69d1">Featured capability</div><h2 style="margin-top:7px">Voucher & License Abuse Monitor</h2><p class="sub">Detect suspicious resale, bulk-sharing or bypass attempts around vouchers, keys, subscriptions and premium benefits — then guide users toward verification, education and official escalation.</p><div class="tags"><span class="tag">Compliance</span><span class="tag">Trust & Safety</span><span class="tag">Detection</span><span class="tag">Reporting</span></div><button class="btn soft" style="margin-top:15px" data-go="agent-abuse">Open monitoring agent</button></div>
+    <div class="feature-visual">🛡️</div>
+  </div>
+
+  <div class="section overview-module-section">
+  <div class="overview-module-head">
+    <div>
+      <h2>Explore the Platform</h2>
+      <p>Open a module and continue where you left off.</p>
+    </div>
+    <span class="chip">Featured modules</span>
+  </div>
+
+  <div class="overview-module-grid">
+
+    <article class="overview-module-card accent-blue" tabindex="0">
+      <div class="overview-module-top"><div class="overview-module-icon" aria-hidden="true">◫</div><span class="overview-module-tag">Analytics</span></div>
+      <h3>Command Center</h3>
+      <p>See alerts, activity and platform status in one view.</p>
+      <div class="overview-module-footer"><span class="overview-module-meta">Core module</span><a href="#command" class="overview-module-action">Open</a></div>
+    </article>
+
+    <article class="overview-module-card accent-green" tabindex="0">
+      <div class="overview-module-top"><div class="overview-module-icon" aria-hidden="true">✦</div><span class="overview-module-tag">AI</span></div>
+      <h3>Agent Hub</h3>
+      <p>Explore specialist agents and launch a focused workflow.</p>
+      <div class="overview-module-footer"><span class="overview-module-meta">6 agents</span><a href="#agents" class="overview-module-action">Explore</a></div>
+    </article>
+
+    <article class="overview-module-card accent-purple" tabindex="0">
+      <div class="overview-module-top"><div class="overview-module-icon" aria-hidden="true">◉</div><span class="overview-module-tag">AI</span></div>
+      <h3>AI Copilot</h3>
+      <p>Ask one question and let the router choose the agent.</p>
+      <div class="overview-module-footer"><span class="overview-module-meta">Demo mode</span><a href="#copilot" class="overview-module-action">Open</a></div>
+    </article>
+
+    <article class="overview-module-card accent-red" tabindex="0">
+      <div class="overview-module-top"><div class="overview-module-icon" aria-hidden="true">⚠</div><span class="overview-module-tag">Safety</span></div>
+      <h3>Alerts & Safety</h3>
+      <p>Review risk alerts and follow safe next steps.</p>
+      <div class="overview-module-footer"><span class="overview-module-meta">8 open</span><a href="#alerts" class="overview-module-action">Review</a></div>
+    </article>
+
+    <article class="overview-module-card accent-cyan" tabindex="0">
+      <div class="overview-module-top"><div class="overview-module-icon" aria-hidden="true">▣</div><span class="overview-module-tag">Resource</span></div>
+      <h3>Knowledge & RAG</h3>
+      <p>Find trusted content for grounded answers.</p>
+      <div class="overview-module-footer"><span class="overview-module-meta">326 items</span><a href="#knowledge" class="overview-module-action">Browse</a></div>
+    </article>
+
+    <article class="overview-module-card accent-indigo" tabindex="0">
+      <div class="overview-module-top"><div class="overview-module-icon" aria-hidden="true">◎</div><span class="overview-module-tag">Insight</span></div>
+      <h3>Analytics & Impact</h3>
+      <p>See usage, quality and safety trends.</p>
+      <div class="overview-module-footer"><span class="overview-module-meta">Demo metrics</span><a href="#analytics" class="overview-module-action">View</a></div>
+    </article>
+
+    <article class="overview-module-card accent-amber" tabindex="0">
+      <div class="overview-module-top"><div class="overview-module-icon" aria-hidden="true">◈</div><span class="overview-module-tag">Microsoft</span></div>
+      <h3>Microsoft Ecosystem</h3>
+      <p>Browse programs, tools and useful resources.</p>
+      <div class="overview-module-footer"><span class="overview-module-meta">Curated hub</span><a href="#inline-ms-ecosystem" class="overview-module-action">Explore</a></div>
+    </article>
+
+    <article class="overview-module-card accent-blue" tabindex="0">
+      <div class="overview-module-top"><div class="overview-module-icon" aria-hidden="true">◎</div><span class="overview-module-tag">Business</span></div>
+      <h3>Business Intelligence</h3>
+      <p>View published financial, segment and regional data.</p>
+      <div class="overview-module-footer"><span class="overview-module-meta">Source aware</span><a href="#business-intel" class="overview-module-action">Open</a></div>
+    </article>
+
+    <article class="overview-module-card accent-green" tabindex="0">
+      <div class="overview-module-top"><div class="overview-module-icon" aria-hidden="true">↗</div><span class="overview-module-tag">Support</span></div>
+      <h3>Problem Center</h3>
+      <p>Find guided help for common Microsoft issues.</p>
+      <div class="overview-module-footer"><span class="overview-module-meta">Troubleshooting</span><a href="#problem-center" class="overview-module-action">Get help</a></div>
+    </article>
+
+    <article class="overview-module-card accent-purple" tabindex="0">
+      <div class="overview-module-top"><div class="overview-module-icon" aria-hidden="true">🎓</div><span class="overview-module-tag">Learning</span></div>
+      <h3>Certification Hub</h3>
+      <p>Plan exams, practice and track credentials.</p>
+      <div class="overview-module-footer"><span class="overview-module-meta">Learning path</span><a href="#certifications" class="overview-module-action">Start</a></div>
+    </article>
+
+    <article class="overview-module-card accent-red" tabindex="0">
+      <div class="overview-module-top"><div class="overview-module-icon" aria-hidden="true">🛡</div><span class="overview-module-tag">Trust</span></div>
+      <h3>Voucher Protection</h3>
+      <p>Protect sensitive entitlements with safe handling.</p>
+      <div class="overview-module-footer"><span class="overview-module-meta">Masked values</span><a href="#vouchers" class="overview-module-action">Open</a></div>
+    </article>
+
+    <article class="overview-module-card accent-cyan" tabindex="0">
+      <div class="overview-module-top"><div class="overview-module-icon" aria-hidden="true">◉</div><span class="overview-module-tag">Account</span></div>
+      <h3>Profile Dashboard</h3>
+      <p>Keep skills, credentials and activity together.</p>
+      <div class="overview-module-footer"><span class="overview-module-meta">Personal view</span><a href="#profile" class="overview-module-action">View</a></div>
+    </article>
+
+    <article class="overview-module-card accent-teal" tabindex="0">
+      <div class="overview-module-top"><div class="overview-module-icon" aria-hidden="true">⚙</div><span class="overview-module-tag">Admin</span></div>
+      <h3>Governance Center</h3>
+      <p>Manage policies, agents, reviews and audit controls.</p>
+      <div class="overview-module-footer"><span class="overview-module-meta">Admin only</span><a href="#admin" class="overview-module-action">Open</a></div>
+    </article>
+
+  </div>
+</div>
+
+<section class="section" id="inline-ms-ecosystem">
+  <div class="title-row">
+    <div>
+      <h2>Microsoft Ecosystem</h2>
+      <p class="sub">Programs, tools and resources for learning, building and support.</p>
+    </div>
+    <span class="chip">Programs · Tools · Resources</span>
+  </div>
+
+  <div class="eco-section-head">
+    <div class="eco-section-mark">◉</div>
+    <div><h3>Programs</h3><p>Start learning and connect with the community.</p></div>
+  </div>
+
+  <div class="eco-grid">
+    <article class="card eco-card from-left tint-blue">
+      <div class="eco-icon-row"><div class="eco-icon">◇</div><span class="eco-badge">Learning</span></div>
+      <h4>Microsoft Learn</h4>
+      <p>Build skills with guided lessons and practice.</p>
+      <div class="tags"><span class="tag">Program</span><span class="tag">Skills</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+
+    <article class="card eco-card from-top tint-green">
+      <div class="eco-icon-row"><div class="eco-icon">□</div><span class="eco-badge">Students</span></div>
+      <h4>Azure for Students</h4>
+      <p>Explore student cloud learning and benefits.</p>
+      <div class="tags"><span class="tag">Program</span><span class="tag">Azure</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+
+    <article class="card eco-card from-right tint-purple">
+      <div class="eco-icon-row"><div class="eco-icon">○</div><span class="eco-badge">Community</span></div>
+      <h4>Student Community</h4>
+      <p>Find events, groups and learning activities.</p>
+      <div class="tags"><span class="tag">Program</span><span class="tag">Community</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+
+    <article class="card eco-card from-left tint-cyan">
+      <div class="eco-icon-row"><div class="eco-icon">✦</div><span class="eco-badge">AI</span></div>
+      <h4>AI Learning</h4>
+      <p>Explore simple AI lessons and guided paths.</p>
+      <div class="tags"><span class="tag">Program</span><span class="tag">AI</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+  </div>
+
+  <div class="eco-section-head">
+    <div class="eco-section-mark" style="background:#effaf7;border-color:#d8efe8">✦</div>
+    <div><h3>Tools</h3><p>Build, secure, search and work with Microsoft tools.</p></div>
+  </div>
+
+  <div class="eco-grid">
+    <article class="card eco-card from-top tint-blue">
+      <div class="eco-icon-row"><div class="eco-icon">✦</div><span class="eco-badge">Azure</span></div>
+      <h4>Microsoft Foundry</h4>
+      <p>Build and manage AI experiences.</p>
+      <div class="tags"><span class="tag">Tool</span><span class="tag">AI</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+
+    <article class="card eco-card from-right tint-green">
+      <div class="eco-icon-row"><div class="eco-icon">☁</div><span class="eco-badge">Cloud</span></div>
+      <h4>Microsoft Azure</h4>
+      <p>Build and run cloud apps and services.</p>
+      <div class="tags"><span class="tag">Tool</span><span class="tag">Cloud</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+
+    <article class="card eco-card from-left tint-purple">
+      <div class="eco-icon-row"><div class="eco-icon">▦</div><span class="eco-badge">Data</span></div>
+      <h4>Microsoft Fabric</h4>
+      <p>Work with data, reports and insights.</p>
+      <div class="tags"><span class="tag">Tool</span><span class="tag">Analytics</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+
+    <article class="card eco-card from-top tint-cyan">
+      <div class="eco-icon-row"><div class="eco-icon">⌘</div><span class="eco-badge">Developer</span></div>
+      <h4>GitHub</h4>
+      <p>Build, share and manage projects.</p>
+      <div class="tags"><span class="tag">Tool</span><span class="tag">Code</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+
+    <article class="card eco-card from-right tint-red">
+      <div class="eco-icon-row"><div class="eco-icon">◈</div><span class="eco-badge">Security</span></div>
+      <h4>Microsoft Defender</h4>
+      <p>Protect accounts, devices and work.</p>
+      <div class="tags"><span class="tag">Tool</span><span class="tag">Security</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+
+    <article class="card eco-card from-left tint-blue">
+      <div class="eco-icon-row"><div class="eco-icon">▤</div><span class="eco-badge">Work</span></div>
+      <h4>Microsoft Teams</h4>
+      <p>Chat, meet and collaborate with teams.</p>
+      <div class="tags"><span class="tag">Tool</span><span class="tag">Collaboration</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+
+    <article class="card eco-card from-top tint-green">
+      <div class="eco-icon-row"><div class="eco-icon">◎</div><span class="eco-badge">Access</span></div>
+      <h4>Microsoft Entra</h4>
+      <p>Manage sign-in and access.</p>
+      <div class="tags"><span class="tag">Tool</span><span class="tag">Identity</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+
+    <article class="card eco-card from-right tint-amber">
+      <div class="eco-icon-row"><div class="eco-icon">⌁</div><span class="eco-badge">Search</span></div>
+      <h4>Azure AI Search</h4>
+      <p>Find useful information across content.</p>
+      <div class="tags"><span class="tag">Tool</span><span class="tag">Knowledge</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+  </div>
+
+  <div class="eco-section-head">
+    <div class="eco-section-mark" style="background:#fff8e9;border-color:#f3e1b6">↗</div>
+    <div><h3>Resources</h3><p>Find support, documentation and credential help.</p></div>
+  </div>
+
+  <div class="eco-grid">
+    <article class="card eco-card from-left tint-purple">
+      <div class="eco-icon-row"><div class="eco-icon">🎓</div><span class="eco-badge">Credentials</span></div>
+      <h4>Certification Center</h4>
+      <p>Plan exams and manage credential help.</p>
+      <div class="tags"><span class="tag">Resource</span><span class="tag">Exams</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+
+    <article class="card eco-card from-top tint-blue">
+      <div class="eco-icon-row"><div class="eco-icon">?</div><span class="eco-badge">Support</span></div>
+      <h4>Microsoft Support</h4>
+      <p>Find help for products and accounts.</p>
+      <div class="tags"><span class="tag">Resource</span><span class="tag">Help</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+
+    <article class="card eco-card from-right tint-green">
+      <div class="eco-icon-row"><div class="eco-icon">◒</div><span class="eco-badge">Status</span></div>
+      <h4>Service Health</h4>
+      <p>Check published service status information.</p>
+      <div class="tags"><span class="tag">Resource</span><span class="tag">Status</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+
+    <article class="card eco-card from-left tint-cyan">
+      <div class="eco-icon-row"><div class="eco-icon">▣</div><span class="eco-badge">Docs</span></div>
+      <h4>Microsoft Documentation</h4>
+      <p>Read guides, tutorials and product information.</p>
+      <div class="tags"><span class="tag">Resource</span><span class="tag">Docs</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+
+    <article class="card eco-card from-top tint-amber">
+      <div class="eco-icon-row"><div class="eco-icon">↗</div><span class="eco-badge">Community</span></div>
+      <h4>Community & Q&A</h4>
+      <p>Browse questions, answers and practical help.</p>
+      <div class="tags"><span class="tag">Resource</span><span class="tag">Q&A</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+
+    <article class="card eco-card from-right tint-red">
+      <div class="eco-icon-row"><div class="eco-icon">◌</div><span class="eco-badge">Reports</span></div>
+      <h4>Microsoft Reports</h4>
+      <p>Explore public business and technology reports.</p>
+      <div class="tags"><span class="tag">Resource</span><span class="tag">Reports</span></div>
+      <div class="meta"><span class="creator">Placeholder icon</span><button class="action-btn">Learn more →</button></div>
+    </article>
+  </div>
+</section>
+
+<footer class="footer"><div><h3>Rural Guardian Intelligence Platform</h3><p>Made by Sunny · Hackathon platform prototype. Live Microsoft services require Azure configuration.</p></div><p>Overview · Agents · Copilot · Problem Center · Risk & Reliability · Business Intelligence · Knowledge · Certification · Trust</p></footer>
+</section>
+
+<!-- COMMAND CENTER -->
+<section class="view" id="command"><div class="page">
+  <div class="breadcrumb">Platform / Command Center</div><div class="title-row"><div><h1>Command Center</h1><p class="sub">Operational view across agents, safety events and platform signals.</p></div><button class="btn soft">Export report</button></div>
+  <div class="grid-4">
+    <div class="card metric"><div class="kicker">Open alerts</div><div class="num">08</div><div class="delta" style="color:#d98b00">2 need review</div></div>
+    <div class="card metric"><div class="kicker">Agent runs</div><div class="num">1,284</div><div class="delta">+14% demo trend</div></div>
+    <div class="card metric"><div class="kicker">Risk escalations</div><div class="num">17</div><div class="delta">audited</div></div>
+    <div class="card metric"><div class="kicker">Service health</div><div class="num">Good</div><div class="delta">demo status</div></div>
+  </div>
+  <div class="section grid-2">
+    <div class="card"><h3>Active safety queue</h3><div class="list" style="margin-top:12px">
+      <div class="list-item"><div class="left"><i class="status-dot red"></i><div><b style="font-size:12px">Flood risk</b><small style="display:block;color:var(--muted)">North zone · Agriculture + Disaster</small></div></div><span class="risk high">HIGH</span></div>
+      <div class="list-item"><div class="left"><i class="status-dot amber"></i><div><b style="font-size:12px">Voucher resale signal</b><small style="display:block;color:var(--muted)">Trust & Safety agent</small></div></div><span class="risk med">MEDIUM</span></div>
+      <div class="list-item"><div class="left"><i class="status-dot"></i><div><b style="font-size:12px">Health escalation</b><small style="display:block;color:var(--muted)">Emergency guidance sent</small></div></div><span class="risk low">LOW</span></div>
+    </div></div>
+    <div class="card"><h3>Agent execution</h3><div class="timeline">
+      <div><div><strong>Voucher & License Abuse Monitor</strong></div><small>Analyzed policy-bypass request · flagged for review</small></div>
+      <div><div><strong>Agriculture Guardian</strong></div><small>Weather + crop query routed · knowledge retrieval complete</small></div>
+      <div><div><strong>Disaster Response</strong></div><small>Flood safety checklist served · escalation visible</small></div>
+      <div><div><strong>Education Guardian</strong></div><small>Generated 7-day study plan · user received response</small></div>
+    </div></div>
+  </div>
+</div></section>
+
+<!-- AGENTS -->
+<section class="view" id="agents"><div class="page">
+  <div class="breadcrumb">Platform / Agent Hub</div><div class="title-row"><div><h1>AI Agent Hub</h1><p class="sub">Discover specialized workflows. Every agent has its own detail page and workspace.</p></div><button class="btn soft">Create agent</button></div>
+  <div class="grid-3">
+    <div class="card agent-card"><div class="icon">🌾</div><h3>Agriculture Guardian</h3><p>Crop intelligence, weather risk, irrigation, pests and grounded agricultural guidance.</p><div class="tags"><span class="tag">Crop AI</span><span class="tag">Weather</span><span class="tag">Knowledge</span></div><button class="btn soft" style="margin-top:16px" data-go="agent-agri">Open agent</button></div>
+    <div class="card agent-card"><div class="icon">🚨</div><h3>Disaster Response Guardian</h3><p>Flood, storm and emergency workflows with risk-aware checklists and escalation.</p><div class="tags"><span class="tag">Safety</span><span class="tag">Emergency</span><span class="tag">Risk</span></div><button class="btn soft" style="margin-top:16px" data-go="agent-disaster">Open agent</button></div>
+    <div class="card agent-card"><div class="icon">❤️</div><h3>Health Safetyian</h3><p>First-aid information, risk detection and escalation without diagnosis or prescriptions.</p><div class="tags"><span class="tag">First Aid</span><span class="tag">Safety</span></div><button class="btn soft" style="margin-top:16px" data-go="agent-health">Open agent</button></div>
+    <div class="card agent-card"><div class="icon">📚</div><h3>Education Guardian</h3><p>Study planning, quizzes, concept explanations and knowledge-grounded learning support.</p><div class="tags"><span class="tag">Learning</span><span class="tag">Quiz</span><span class="tag">Knowledge</span></div><button class="btn soft" style="margin-top:16px" data-go="agent-education">Open agent</button></div>
+    <div class="card agent-card"><div class="icon">💼</div><h3>Rural Business Guardian</h3><p>Business planning, market research workflows and entrepreneurship assistance.</p><div class="tags"><span class="tag">Planning</span><span class="tag">Business</span></div><button class="btn soft" style="margin-top:16px" data-go="agent-business">Open agent</button></div>
+    <div class="card agent-card" style="border-color:#bcd8f4"><div class="icon">🛡️</div><h3>Voucher & License Abuse Monitor</h3><p>Compliance-focused detection of suspicious resale, sharing, bulk distribution or bypass requests.</p><div class="tags"><span class="tag">Compliance</span><span class="tag">Detection</span><span class="tag">Reporting</span></div><button class="btn soft" style="margin-top:16px" data-go="agent-abuse">Open agent</button></div>
+  </div>
+</div></section>
+
+<!-- COPILOT -->
+<section class="view" id="copilot"><div class="page">
+  <div class="breadcrumb">Platform / AI Copilot</div>
+  <div class="title-row">
+    <div>
+      <h1>Rural Guardian Copilot</h1>
+      <p class="sub">Ask one question. The router sends it to the right specialist agent.</p>
+    </div>
+    <span class="chip">Demo mode</span>
+  </div>
+
+  <div class="copilot-layout">
+    <div class="copilot-main">
+      <div class="card copilot-chat-card">
+        <div class="copilot-chat-head">
+          <div>
+            <h3>AI Copilot</h3>
+            <small>Universal router · Safety layer · Placeholder data</small>
+          </div>
+          <div class="copilot-chat-tools">
+            <button class="btn soft" style="padding:8px 10px">New chat</button>
+            <button class="btn" style="padding:8px 10px">Voice</button>
+          </div>
+        </div>
+
+        <div class="copilot-messages" id="copilotPageMessages">
+          <div class="copilot-bubble ai">
+            <b>Rural Guardian</b><br>
+            Tell me the problem and I’ll route it to the right agent.
+          </div>
+          <div class="copilot-bubble user">
+            My village has heavy rain forecast and the wheat is ready.
+          </div>
+          <div class="copilot-bubble ai">
+            <b>Router → Agriculture Guardian</b><br>
+            Demo response: review harvest timing, drainage and current weather guidance. Production mode can use approved sources.
+          </div>
+        </div>
+
+        <div class="copilot-compose">
+          <input id="copilotPageInput" placeholder="Ask Rural Guardian..." />
+          <button class="btn dark" id="copilotPageSend">Send</button>
+        </div>
+      </div>
+
+      <div class="section grid-2">
+        <div class="card">
+          <h3>Current route</h3>
+          <div class="copilot-context" style="margin-top:12px">
+            <span class="tag">Intent: Agriculture</span>
+            <span class="tag">Agent: Agriculture Guardian</span>
+            <span class="tag">Risk: Low</span>
+            <span class="tag">Knowledge: Ready</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Workflow</h3>
+          <div class="workflow">
+            <span class="node">User</span><span class="arr">→</span>
+            <span class="node">Router</span><span class="arr">→</span>
+            <span class="node">Agent</span><span class="arr">→</span>
+            <span class="node">Safety</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="copilot-rail">
+      <div class="card">
+        <h3>Agent selection</h3>
+        <p class="sub">Choose an agent or let the router decide.</p>
+        <div class="agent-choice">
+          <button class="active" onclick="selectCopilotAgent(this,'Auto Router')">✦ Auto Router</button>
+          <button onclick="selectCopilotAgent(this,'Agriculture Guardian')">🌾 Agriculture</button>
+          <button onclick="selectCopilotAgent(this,'Disaster Response')">🚨 Disaster</button>
+          <button onclick="selectCopilotAgent(this,'Health Safety')">❤️ Health</button>
+          <button onclick="selectCopilotAgent(this,'Education Guardian')">📚 Education</button>
+          <button onclick="selectCopilotAgent(this,'Rural Business')">💼 Business</button>
+          <button onclick="selectCopilotAgent(this,'Voucher & License Abuse Monitor')">🛡 Safety</button>
+        </div>
+        <div class="tip" id="selectedAgentTip">Selected: Auto Router</div>
+      </div>
+
+      <div class="card">
+        <h3>Recent actions</h3>
+        <div class="side-list">
+          <div class="item"><i class="status-dot"></i><div><b>Agriculture Guardian</b><small>Weather query routed · 2 min ago</small></div></div>
+          <div class="item"><i class="status-dot amber"></i><div><b>Risk Guard</b><small>Request checked · 8 min ago</small></div></div>
+          <div class="item"><i class="status-dot"></i><div><b>Knowledge Layer</b><small>Source lookup complete · 12 min ago</small></div></div>
+          <div class="item"><i class="status-dot red"></i><div><b>Safety Review</b><small>High-risk case escalated · 18 min ago</small></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Quick tips</h3>
+        <div class="tip">Be specific about the problem, location and time.</div>
+        <div class="tip">Do not share passwords, tokens, voucher codes or private credentials.</div>
+        <div class="tip">For live Microsoft data, the production app should show source and freshness.</div>
+      </div>
+    </aside>
+  </div>
+</div></section>
+
+<!-- ALERTS -->
+<section class="view" id="alerts"><div class="page">
+  <div class="breadcrumb">Platform / Alerts & Safety</div><div class="title-row"><div><h1>Alerts & Safety Center</h1><p class="sub">Unified queue for high-risk conversations, environment signals and compliance flags.</p></div><button class="btn soft">Create policy</button></div>
+  <div class="grid-2">
+    <div class="card"><h3>Current alerts</h3><div class="list" style="margin-top:12px">
+      <div class="list-item"><div class="left"><i class="status-dot red"></i><div><b style="font-size:12px">Flood event</b><small style="display:block;color:var(--muted)">North zone · 8 min ago</small></div></div><span class="risk high">HIGH</span></div>
+      <div class="list-item"><div class="left"><i class="status-dot red"></i><div><b style="font-size:12px">Medical emergency language</b><small style="display:block;color:var(--muted)">Conversation escalated</small></div></div><span class="risk high">HIGH</span></div>
+      <div class="list-item"><div class="left"><i class="status-dot amber"></i><div><b style="font-size:12px">Voucher sharing signal</b><small style="display:block;color:var(--muted)">Trust & Safety review</small></div></div><span class="risk med">MEDIUM</span></div>
+    </div></div>
+    <div class="card"><h3>Safety controls</h3><div class="list" style="margin-top:12px">
+      <div class="list-item"><span>Medical prescription blocking</span><span class="risk low">ON</span></div>
+      <div class="list-item"><span>Policy-bypass detection</span><span class="risk low">ON</span></div>
+      <div class="list-item"><span>Audit logging</span><span class="risk low">ON</span></div>
+      <div class="list-item"><span>Human escalation</span><span class="risk low">ON</span></div>
+    </div></div>
+  </div>
+</div></section>
+
+<!-- KNOWLEDGE -->
+<section class="view" id="knowledge"><div class="page">
+  <div class="breadcrumb">Platform / Knowledge & RAG</div><div class="title-row"><div><h1>Knowledge & RAG Center</h1><p class="sub">Organize rural knowledge sources and ground agent responses.</p></div><button class="btn dark">Upload source</button></div>
+  <div class="grid-3">
+    <div class="card"><h3>🌾 Agriculture Library</h3><p class="sub">Crop guides, irrigation, pests, weather advisories and farming references.</p><div class="progress"><div class="bar" style="width:87%"></div></div><small class="sub">87% indexed</small></div>
+    <div class="card"><h3>🚨 Disaster Playbooks</h3><p class="sub">Flood, storm, evacuation and preparedness documents.</p><div class="progress"><div class="bar" style="width:74%"></div></div><small class="sub">74% indexed</small></div>
+    <div class="card"><h3>🎓 Certification Library</h3><p class="sub">Learning plans, approved notes and practice content.</p><div class="progress"><div class="bar" style="width:92%"></div></div><small class="sub">92% indexed</small></div>
+  </div>
+  <div class="section card"><h3>Recent retrieval activity</h3><table class="table" style="margin-top:10px"><thead><tr><th>Query</th><th>Source collection</th><th>Grounding</th></tr></thead><tbody><tr><td>Wheat harvest + rain</td><td>Agriculture Library</td><td>5 citations</td></tr><tr><td>Flood safety steps</td><td>Disaster Playbooks</td><td>7 citations</td></tr><tr><td>Voucher terms</td><td>Trust & Safety Policies</td><td>4 citations</td></tr></tbody></table></div>
+</div></section>
+
+<!-- ANALYTICS -->
+<section class="view" id="analytics"><div class="page">
+  <div class="breadcrumb">Platform / Analytics</div><div class="title-row"><div><h1>Analytics & Impact</h1><p class="sub">Product, agent quality and safety telemetry — demo data in this HTML.</p></div><button class="btn soft">Date: Last 30 days</button></div>
+  <div class="grid-4"><div class="card metric"><div class="kicker">Total interactions</div><div class="num">1,284</div></div><div class="card metric"><div class="kicker">Router confidence</div><div class="num">91%</div></div><div class="card metric"><div class="kicker">Safety reviews</div><div class="num">43</div></div><div class="card metric"><div class="kicker">Knowledge hits</div><div class="num">78%</div></div></div>
+  <div class="section grid-2"><div class="card"><h3>Agent activity</h3><div style="margin-top:15px"><p class="sub">Agriculture · 42%</p><div class="progress"><div class="bar" style="width:42%"></div></div><p class="sub" style="margin-top:10px">Education · 24%</p><div class="progress"><div class="bar" style="width:24%"></div></div><p class="sub" style="margin-top:10px">Disaster · 16%</p><div class="progress"><div class="bar" style="width:16%"></div></div><p class="sub" style="margin-top:10px">Trust & Safety · 8%</p><div class="progress"><div class="bar" style="width:8%"></div></div></div></div>
+  <div class="card"><h3>Quality & safety</h3><div class="list" style="margin-top:12px"><div class="list-item"><span>Grounded answer coverage</span><b>78%</b></div><div class="list-item"><span>Blocked unsafe requests</span><b>31</b></div><div class="list-item"><span>Escalated high-risk cases</span><b>17</b></div><div class="list-item"><span>Open review queue</span><b>08</b></div></div></div></div>
+</div></section>
+
+<!-- AGENT DETAIL TEMPLATE PAGES -->
+<section class="view" id="agent-agri"><div class="page agent-detail-page" data-kind="Agriculture Guardian" data-emoji="🌾"><div class="breadcrumb">Agent Hub / Agriculture Guardian</div><div class="agent-detail"><div><div class="big-agent"><div><span class="risk low">ACTIVE</span><h1 style="margin-top:12px">Agriculture Guardian</h1><p class="sub">Crop intelligence, weather-risk workflows and knowledge-grounded farm support.</p><div class="tags"><span class="tag">Weather</span><span class="tag">Crop AI</span><span class="tag">Knowledge</span></div></div><div class="emoji">🌾</div></div><div class="card section"><h3>How it solves a request</h3><div class="workflow"><span class="node">User</span><span class="arr">→</span><span class="node">Router</span><span class="arr">→</span><span class="node">Agriculture</span><span class="arr">→</span><span class="node">Knowledge</span><span class="arr">→</span><span class="node">Safety</span></div></div></div><div class="card"><h3>Capabilities</h3><div class="list" style="margin-top:12px"><div class="list-item"><span>Crop guidance</span><b>✓</b></div><div class="list-item"><span>Weather risk</span><b>✓</b></div><div class="list-item"><span>Harvest planning</span><b>✓</b></div><div class="list-item"><span>Source grounding</span><b>✓</b></div></div><button class="btn dark" style="margin-top:15px;width:100%" data-go="copilot">Launch workspace</button></div></div></div></section>
+
+<section class="view" id="agent-disaster"><div class="page"><div class="breadcrumb">Agent Hub / Disaster Response</div><div class="card big-agent"><div><span class="risk high">SAFETY-CRITICAL</span><h1 style="margin-top:12px">Disaster Response Guardian</h1><p class="sub">Flood, storm and emergency readiness workflows.</p><button class="btn dark" style="margin-top:16px" data-go="alerts">Open safety center</button></div><div class="emoji">🚨</div></div></div></section>
+
+<section class="view" id="agent-health"><div class="page"><div class="breadcrumb">Agent Hub / Health Safety</div><div class="card big-agent"><div><span class="risk high">GUARDED</span><h1 style="margin-top:12px">Health Safetyian</h1><p class="sub">First-aid information and urgent-risk escalation. No diagnosis or prescription.</p><button class="btn danger" style="margin-top:16px" onclick="alert('Demo: high-risk health requests are escalated to qualified emergency/medical support.')">Test safety guard</button></div><div class="emoji">❤️</div></div></div></section>
+
+<section class="view" id="agent-education"><div class="page"><div class="breadcrumb">Agent Hub / Education</div><div class="card big-agent"><div><span class="risk low">ACTIVE</span><h1 style="margin-top:12px">Education Guardian</h1><p class="sub">Study plans, quizzes, concept explanations and learning resources.</p><button class="btn dark" style="margin-top:16px" data-go="certifications">Open Certification Hub</button></div><div class="emoji">📚</div></div></div></section>
+
+<section class="view" id="agent-business"><div class="page"><div class="breadcrumb">Agent Hub / Rural Business</div><div class="card big-agent"><div><span class="risk low">ACTIVE</span><h1 style="margin-top:12px">Rural Business Guardian</h1><p class="sub">Business planning, market support and entrepreneurship workflows.</p><button class="btn dark" style="margin-top:16px" data-go="analytics">View impact metrics</button></div><div class="emoji">💼</div></div></div></section>
+
+<!-- NEW ABUSE MONITOR AGENT -->
+<section class="view" id="agent-abuse"><div class="page">
+  <div class="breadcrumb">Agent Hub / Voucher & License Abuse Monitor</div>
+  <div class="agent-detail">
+    <div>
+      <div class="big-agent"><div><span class="risk med">COMPLIANCE MONITOR</span><h1 style="margin-top:12px">Voucher & License Abuse Monitor</h1><p class="sub">Protect Microsoft-related ecosystems from suspicious voucher, key, coupon, subscription and premium-benefit misuse.</p><div class="tags"><span class="tag">Detection</span><span class="tag">Compliance</span><span class="tag">User Education</span><span class="tag">Escalation</span></div></div><div class="emoji">🛡️</div></div>
+      <div class="card section"><h3>Agent policy</h3><p class="sub">You are a compliance and security assistant. Identify signs of illegal trading, resale, or sharing of exam vouchers, keys, subscriptions, or licenses. Flag suspicious behavior such as bulk code sharing, marketplace resale, or requests for bypassing terms. Provide safe guidance only: explain policies, recommend verification steps, and suggest reporting channels. Do not generate, validate, or help distribute any codes. If misuse is suspected, recommend contacting official support or program administrators.</p><div class="section" style="margin-top:18px"><h3>Output contract</h3><div class="workflow"><span class="node">Risk level</span><span class="node">Short explanation</span><span class="node">Suggested actions</span><span class="node">Official reporting path</span></div></div></div>
+    </div>
+    <div class="card">
+      <h3>Detection signals</h3><div class="list" style="margin-top:12px">
+        <div class="list-item"><span>Bulk voucher sharing</span><span class="risk med">MED</span></div>
+        <div class="list-item"><span>Marketplace resale language</span><span class="risk high">HIGH</span></div>
+        <div class="list-item"><span>Bypass / evasion request</span><span class="risk high">HIGH</span></div>
+        <div class="list-item"><span>Unexpected credential exposure</span><span class="risk med">MED</span></div>
+      </div>
+      <div class="section" style="margin-top:18px"><h3>Recommended response</h3><div class="timeline"><div><strong>1 · Educate</strong><small>Explain applicable program / license terms.</small></div><div><strong>2 · Verify</strong><small>Use official issuer/program channels.</small></div><div><strong>3 · Review</strong><small>Route suspicious cases to authorized reviewers.</small></div><div><strong>4 · Escalate</strong><small>Use official Microsoft/program support channels.</small></div></div></div>
+      <button class="btn dark" style="width:100%;margin-top:18px" onclick="runAbuseDemo()">Run safe detection demo</button>
+    </div>
+  </div>
+</div></section>
+
+
+
+<!-- RISK & RELIABILITY VIEWS -->
+<section class="view" id="risk-overview"><div class="page">
+  <div class="breadcrumb">Microsoft Risk & Reliability / Overview</div>
+  <div class="title-row"><div><h1>Microsoft Risk & Reliability</h1><p class="sub">A single operating layer for identity, privacy, API reliability, auditability, provider limits and client compatibility.</p></div><span class="chip">Risk-aware · Demo</span></div>
+  <div class="grid-4">
+    <div class="card metric risk-kpi"><div class="kicker">Identity events</div><div class="num">12</div><div class="delta">2 need review</div></div>
+    <div class="card metric risk-kpi"><div class="kicker">Privacy checks</div><div class="num">38</div><div class="delta">all demo policies passing</div></div>
+    <div class="card metric risk-kpi"><div class="kicker">Rate-limit events</div><div class="num">07</div><div class="delta">within configured threshold</div></div>
+    <div class="card metric risk-kpi"><div class="kicker">Reliability incidents</div><div class="num">03</div><div class="delta">tracked / demo</div></div>
+  </div>
+  <div class="section grid-2">
+    <div class="card"><h3>Reliability workflow</h3><div class="workflow"><span class="node">Detect</span><span class="arr">→</span><span class="node">Classify</span><span class="arr">→</span><span class="node">Verify</span><span class="arr">→</span><span class="node">Mitigate</span><span class="arr">→</span><span class="node">Audit</span></div><p class="sub" style="margin-top:12px">Every action is designed to produce an evidence trail and an explicit next step.</p></div>
+    <div class="card"><h3>Risk levels</h3><div class="list" style="margin-top:12px"><div class="list-item"><span>LOW · informational</span><span class="risk low">LOW</span></div><div class="list-item"><span>MEDIUM · review required</span><span class="risk med">MEDIUM</span></div><div class="list-item"><span>HIGH · escalate / protect</span><span class="risk high">HIGH</span></div></div></div>
+  </div>
+  <div class="section grid-3">
+    <div class="card"><h3>🔐 Identity & Access</h3><p class="sub">Sign-in, MFA, RBAC, tenant and permission diagnostics.</p><button class="btn soft" style="margin-top:14px" data-go="risk-identity">Open</button></div>
+    <div class="card"><h3>🛡 Data Privacy & Compliance</h3><p class="sub">Sensitive-data handling, retention, consent and audit controls.</p><button class="btn soft" style="margin-top:14px" data-go="risk-privacy">Open</button></div>
+    <div class="card"><h3>⌁ API & Rate Limits</h3><p class="sub">Quota, throttling, retries, timeouts and safe client behavior.</p><button class="btn soft" style="margin-top:14px" data-go="risk-api">Open</button></div>
+    <div class="card"><h3>◫ Monitoring & Audit Logs</h3><p class="sub">Traces, key decisions, incident history and review queues.</p><button class="btn soft" style="margin-top:14px" data-go="risk-audit">Open</button></div>
+    <div class="card"><h3>◒ Outages & Provider Limits</h3><p class="sub">Service health, regional availability and provider-side limitations.</p><button class="btn soft" style="margin-top:14px" data-go="risk-outage">Open</button></div>
+    <div class="card"><h3>◩ Browser & Compatibility</h3><p class="sub">Browser support, device constraints, permissions and client-side failures.</p><button class="btn soft" style="margin-top:14px" data-go="risk-browser">Open</button></div>
+  </div>
+</div></section>
+
+<section class="view" id="risk-identity"><div class="page">
+  <div class="breadcrumb">Risk & Reliability / Identity & Access</div><div class="title-row"><div><h1>Identity & Access</h1><p class="sub">Diagnose authentication and authorization failures without exposing credentials.</p></div><span class="risk med">CONTROLLED</span></div>
+  <div class="grid-3"><div class="card"><h3>Sign-in failures</h3><p class="sub">Capture the exact error, timestamp, tenant and application context; do not collect passwords or tokens.</p></div><div class="card"><h3>MFA & Conditional Access</h3><p class="sub">Separate authentication failure from policy-based access denial.</p></div><div class="card"><h3>RBAC</h3><p class="sub">Check required role and scope; recommend least-privilege assignments.</p></div></div>
+  <div class="section card"><h3>Safe diagnostic checklist</h3><div class="workflow"><span class="node">Exact error</span><span class="arr">→</span><span class="node">Account / tenant</span><span class="arr">→</span><span class="node">MFA / policy</span><span class="arr">→</span><span class="node">Role / scope</span><span class="arr">→</span><span class="node">Official support</span></div></div>
+</div></section>
+
+<section class="view" id="risk-privacy"><div class="page">
+  <div class="breadcrumb">Risk & Reliability / Data Privacy</div><div class="title-row"><div><h1>Data Privacy & Compliance</h1><p class="sub">Keep sensitive information out of prompts, logs, analytics and client storage unless explicitly required and protected.</p></div></div>
+  <div class="grid-2"><div class="card"><h3>Data handling</h3><div class="list" style="margin-top:12px"><div class="list-item"><span>Secret / token detection</span><b>ON</b></div><div class="list-item"><span>PII minimization</span><b>ON</b></div><div class="list-item"><span>Log redaction</span><b>ON</b></div><div class="list-item"><span>Retention policy</span><b>DEFINED</b></div></div></div><div class="card"><h3>Compliance workflow</h3><div class="workflow"><span class="node">Detect</span><span class="arr">→</span><span class="node">Redact</span><span class="arr">→</span><span class="node">Classify</span><span class="arr">→</span><span class="node">Retain / Delete</span><span class="arr">→</span><span class="node">Audit</span></div></div></div>
+</div></section>
+
+<section class="view" id="risk-api"><div class="page">
+  <div class="breadcrumb">Risk & Reliability / API & Rate Limits</div><div class="title-row"><div><h1>API & Rate Limits</h1><p class="sub">Make integrations resilient to throttling, transient failures and provider constraints.</p></div></div>
+  <div class="grid-3"><div class="card"><h3>Throttling</h3><p class="sub">Honor provider limits; detect 429 patterns and back off instead of retrying aggressively.</p></div><div class="card"><h3>Retries</h3><p class="sub">Use bounded exponential backoff with jitter for transient failures.</p></div><div class="card"><h3>Timeouts</h3><p class="sub">Set explicit client and server timeouts with user-friendly recovery states.</p></div></div>
+  <div class="section card"><h3>Runtime controls</h3><div class="list" style="margin-top:12px"><div class="list-item"><span>Per-user rate limit</span><b>60/min</b></div><div class="list-item"><span>Retry budget</span><b>3</b></div><div class="list-item"><span>Request timeout</span><b>30s</b></div><div class="list-item"><span>Idempotency keys</span><b>READY</b></div></div></div>
+</div></section>
+
+<section class="view" id="risk-audit"><div class="page">
+  <div class="breadcrumb">Risk & Reliability / Monitoring & Audit</div><div class="title-row"><div><h1>Monitoring & Audit Logs</h1><p class="sub">Track important decisions, agent runs, errors, reviews and escalations.</p></div><button class="btn soft">Export audit</button></div>
+  <div class="grid-2"><div class="card"><h3>Recent events</h3><div class="timeline"><div><strong>Abuse Monitor</strong><small>Detected reseller-style language · MEDIUM · review queued</small></div><div><strong>Foundry Agent</strong><small>Permission denied · HIGH · RBAC diagnostic opened</small></div><div><strong>Copilot</strong><small>Medical request routed · safety guard activated</small></div><div><strong>API Gateway</strong><small>Rate limit event · retry policy applied</small></div></div></div><div class="card"><h3>Audit fields</h3><div class="tags"><span class="tag">timestamp</span><span class="tag">actor</span><span class="tag">agent</span><span class="tag">decision</span><span class="tag">risk</span><span class="tag">evidence</span><span class="tag">action</span><span class="tag">escalation</span></div><p class="sub" style="margin-top:12px">Never log secrets, passwords, full voucher codes or access tokens.</p></div></div>
+</div></section>
+
+<section class="view" id="risk-outage"><div class="page">
+  <div class="breadcrumb">Risk & Reliability / Outages & Provider Limits</div><div class="title-row"><div><h1>Outages & Provider Limits</h1><p class="sub">Separate a local application fault from a provider-side incident or regional limitation.</p></div><span class="chip">Live health requires API integration</span></div>
+  <div class="grid-3"><div class="card"><h3>Service health</h3><p class="sub">Query official service-health/status signals in production.</p><span class="risk low" style="margin-top:12px">DEMO: HEALTHY</span></div><div class="card"><h3>Regional availability</h3><p class="sub">Check whether a model, service or feature is available in the selected Azure region.</p><span class="risk med" style="margin-top:12px">CHECK REGION</span></div><div class="card"><h3>Provider quota</h3><p class="sub">Compare requested capacity with current subscription / model quota.</p><span class="risk med" style="margin-top:12px">CHECK QUOTA</span></div></div>
+  <div class="section card"><h3>Incident response</h3><div class="workflow"><span class="node">Detect</span><span class="arr">→</span><span class="node">Confirm provider status</span><span class="arr">→</span><span class="node">Reduce retries</span><span class="arr">→</span><span class="node">Fallback</span><span class="arr">→</span><span class="node">Communicate</span></div></div>
+</div></section>
+
+<section class="view" id="risk-browser"><div class="page">
+  <div class="breadcrumb">Risk & Reliability / Browser Compatibility</div><div class="title-row"><div><h1>Browser & Platform Compatibility</h1><p class="sub">Diagnose client-side problems across browser, device, permissions and network conditions.</p></div></div>
+  <div class="grid-3"><div class="card"><h3>Browser support</h3><p class="sub">Validate required browser APIs and supported versions in the production support matrix.</p></div><div class="card"><h3>Permissions</h3><p class="sub">Microphone, notifications, popups and camera permissions can affect workflows.</p></div><div class="card"><h3>Low bandwidth</h3><p class="sub">Provide text-first UI, smaller payloads, retries and graceful loading states.</p></div></div>
+  <div class="section card"><h3>Client diagnostics</h3><div class="list" style="margin-top:12px"><div class="list-item"><span>JavaScript runtime</span><b id="js-status">OK</b></div><div class="list-item"><span>Secure context</span><b id="secure-status">CHECKING</b></div><div class="list-item"><span>Online state</span><b id="online-status">CHECKING</b></div><div class="list-item"><span>Viewport</span><b id="viewport-status">CHECKING</b></div></div></div>
+</div></section>
+
+<section class="view" id="risk-prompt"><div class="page">
+  <div class="breadcrumb">Risk & Reliability / Shared Risk Agent</div><div class="title-row"><div><h1>Shared Risk Agent</h1><p class="sub">Reusable system prompt for every specialist agent and platform surface.</p></div><span class="risk low">SAFE MODE</span></div>
+  <div class="card"><h3>System prompt</h3><div class="evidence-box" style="margin-top:12px">
+  You are a safety, compliance, and reliability assistant for a multi-agent platform. Assess requests and content for misuse, policy violations, or operational risk, including identity and access issues, data privacy, voucher or license abuse, API abuse, rate limits, monitoring gaps, outages, and platform compatibility. Never generate, validate, or help distribute secrets, keys, vouchers, or premium benefits. When risk is detected, respond with a risk level, a brief explanation, and safe actions: educate the user, require verification, log and review internally, and escalate to official support when appropriate. For normal requests, route to the correct specialist agent and provide reliable, policy-aligned guidance. Log key decisions for auditing and continuous improvement.
+  </div></div>
+  <div class="section grid-4"><div class="card metric"><div class="kicker">Secret generation</div><div class="num">BLOCK</div></div><div class="card metric"><div class="kicker">Secret validation</div><div class="num">BLOCK</div></div><div class="card metric"><div class="kicker">Safe guidance</div><div class="num">ALLOW</div></div><div class="card metric"><div class="kicker">Audit decisions</div><div class="num">LOG</div></div></div>
+</div></section>
+
+
+
+<!-- MICROSOFT BUSINESS INTELLIGENCE -->
+<section class="view" id="business-intel"><div class="page">
+  <div class="breadcrumb">Microsoft Business Intelligence</div>
+  <div class="title-row">
+    <div><h1>Microsoft Business Intelligence</h1><p class="sub">Executive data-fusion workspace combining official financial disclosures, authorized ecosystem data, service telemetry and documented risk signals.</p></div>
+    <span class="source-badge">● Evidence-first</span>
+  </div>
+
+  <div class="hero" style="padding:31px 35px">
+    <div class="eyebrow">Data fusion, not guesswork</div>
+    <h1 style="font-size:31px">See what is officially published — and clearly identify what is not.</h1>
+    <p>Financials come from Microsoft Investor Relations and SEC filings. Product and segment metrics come from Microsoft's earnings disclosures. Entity / location views rely on official legal, registry and country-by-country reporting where published. Live operational data requires authorized connectors.</p>
+    <div class="pills">
+      <span class="pill">Illustrative values · official-source ready</span><span class="pill">Official Financials</span><span class="pill">SEC Filings</span><span class="pill">Segments</span>
+      <span class="pill">Regional Views</span><span class="pill">Risk Signals</span><span class="pill">Audit Trail</span>
+    </div>
+  </div>
+
+  <div class="section grid-4">
+    <div class="card metric"><div class="kicker">FY26 Revenue</div><div class="num">$331.8B</div><div class="delta">fiscal year ended Jun 30, 2026</div></div>
+    <div class="card metric"><div class="kicker">FY26 Operating Income</div><div class="num">$155.2B</div><div class="delta">GAAP</div></div>
+    <div class="card metric"><div class="kicker">FY26 Microsoft Cloud</div><div class="num">$214.4B</div><div class="delta">27% growth</div></div>
+    <div class="card metric"><div class="kicker">Employees</div><div class="num">223K</div><div class="delta">Jun 30, 2026</div></div>
+  </div>
+
+  <div class="section grid-2">
+    <div class="card"><h3>FY26 revenue by reportable segment</h3><p class="sub">Official segment revenue, fiscal year 2026.</p>
+      <div class="bi-chart"><div class="bi-bar" style="height:91%"><span>$140.0B</span></div><div class="bi-bar" style="height:90%"><span>$137.8B</span></div><div class="bi-bar" style="height:35%"><span>$54.1B</span></div></div>
+      <div class="bi-xlabels"><span>Productivity & Business Processes</span><span>Intelligent Cloud</span><span>More Personal Computing</span></div>
+    </div>
+    <div class="card"><h3>Latest quarter · Q4 FY26</h3><p class="sub">Quarter ended June 30, 2026.</p>
+      <div class="list" style="margin-top:12px">
+        <div class="list-item"><span>Revenue</span><b>$90.0B</b></div>
+        <div class="list-item"><span>Operating income</span><b>$40.6B</b></div>
+        <div class="list-item"><span>Net income</span><b>$35.8B</b></div>
+        <div class="list-item"><span>Microsoft Cloud</span><b>$59.3B</b></div>
+        <div class="list-item"><span>Commercial RPO</span><b>$678B</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section grid-3">
+    <div class="card"><h3>Global financial view</h3><p class="sub">Revenue, operating income, net income, cash flow, capital spending and RPO.</p><button class="btn soft" style="margin-top:13px" data-go="bi-overview">Open</button></div>
+    <div class="card"><h3>Regional intelligence</h3><p class="sub">U.S. vs other countries plus published country-level reporting where available.</p><button class="btn soft" style="margin-top:13px" data-go="bi-regional">Open</button></div>
+    <div class="card"><h3>Product & segment intelligence</h3><p class="sub">Microsoft's reportable segments and published product-level KPIs.</p><button class="btn soft" style="margin-top:13px" data-go="bi-segments">Open</button></div>
+  </div>
+</div>
+  <div class="section">
+    <div class="title-row">
+      <div>
+        <h2>Global & India Map</h2>
+        <p class="sub">Click a location to see the mock company count or revenue range.</p>
+      </div>
+      <span class="chip">Illustrative map · demo data</span>
+    </div>
+
+    <div class="bi-map-section">
+
+      <div class="card bi-map-card">
+        <div class="bi-map-toolbar">
+          <div class="bi-map-tabs">
+            <button class="bi-map-tab active" id="mapTabWorld" onclick="switchMap('world')">World</button>
+            <button class="bi-map-tab" id="mapTabIndia" onclick="switchMap('india')">India</button>
+          </div>
+
+          <div class="bi-map-controls">
+            <button onclick="mapZoom(-0.1)" aria-label="Zoom out">−</button>
+            <button onclick="mapZoom(0.1)" aria-label="Zoom in">+</button>
+            <button onclick="mapZoom(0)" aria-label="Reset map">↺</button>
+          </div>
+        </div>
+
+        <div class="bi-map-stage">
+          <svg id="worldMap" class="bi-map-svg" viewBox="0 0 900 430" aria-label="Illustrative world map">
+            <rect x="0" y="0" width="900" height="430" fill="#eef6fb"/>
+            <path class="map-land" d="M92 121l62-28 60 19 29 48-35 36-44-9-32 17-41-34z"/>
+            <path class="map-land" d="M203 236l37 25 16 52-23 61-28-37 5-43-28-32z"/>
+            <path class="map-land" d="M382 104l51-29 63 15 28 29-31 27-48-7-45 14-29-24z"/>
+            <path class="map-land" d="M441 159l56-3 29 31-10 57-42 39-20 62-25-48 6-51-25-39z"/>
+            <path class="map-land" d="M514 96l77-27 68 15 48 46-31 43-60 1-52-19-58 4-25-29z"/>
+            <path class="map-land" d="M650 232l55-9 79 39 18 47-44 17-52-18-26-33-42-8z"/>
+            <path class="map-land" d="M742 350l43-4 39 24-28 17-55-8z"/>
+            <path class="map-land" d="M334 312l23-12 25 23-13 20-30-7z"/>
+            <path class="map-land" d="M289 78l25-15 28 9-6 20-26 8z"/>
+            <g opacity=".7">
+              <line class="map-gridline" x1="0" y1="85" x2="900" y2="85"/>
+              <line class="map-gridline" x1="0" y1="170" x2="900" y2="170"/>
+              <line class="map-gridline" x1="0" y1="255" x2="900" y2="255"/>
+              <line class="map-gridline" x1="0" y1="340" x2="900" y2="340"/>
+              <line class="map-gridline" x1="180" y1="0" x2="180" y2="430"/>
+              <line class="map-gridline" x1="360" y1="0" x2="360" y2="430"/>
+              <line class="map-gridline" x1="540" y1="0" x2="540" y2="430"/>
+              <line class="map-gridline" x1="720" y1="0" x2="720" y2="430"/>
+            </g>
+
+            <g class="map-marker" onclick="selectMapLocation('United States','North America','120+ entities','High public disclosure')" transform="translate(174 160)">
+              <circle r="8" fill="#0b69d1"/><text x="12" y="4">US</text>
+            </g>
+            <g class="map-marker" onclick="selectMapLocation('United Kingdom','Europe','20+ locations','Published presence')" transform="translate(430 142)">
+              <circle r="7" fill="#0b9b83"/><text x="11" y="4">UK</text>
+            </g>
+            <g class="map-marker" onclick="selectMapLocation('India','Asia','50+ locations','Published presence')" transform="translate(570 208)">
+              <circle r="8" fill="#0b9b83"/><text x="12" y="4">IN</text>
+            </g>
+            <g class="map-marker" onclick="selectMapLocation('Germany','Europe','10+ locations','Published presence')" transform="translate(476 150)">
+              <circle r="7" fill="#0b69d1"/><text x="11" y="4">DE</text>
+            </g>
+            <g class="map-marker" onclick="selectMapLocation('Japan','Asia','10+ locations','Published presence')" transform="translate(713 184)">
+              <circle r="7" fill="#d98b00"/><text x="11" y="4">JP</text>
+            </g>
+          </svg>
+
+          <svg id="indiaMap" class="bi-map-svg map-view-hidden" viewBox="0 0 900 430" aria-label="Illustrative India map">
+            <rect x="0" y="0" width="900" height="430" fill="#eefaf6"/>
+            <path class="map-land india" d="M458 52l51 21 16 29 42 20-21 41 26 43-39 38-8 58-39 83-32 13-16-55-30-30-5-61-31-42 21-48 18-49 19-22z"/>
+            <path class="map-land" d="M456 66l-33-24-49 12-27 38 35 18 57-8z"/>
+            <path class="map-land" d="M505 116l55-7 51 33-15 44-57 2-36-27z"/>
+            <path class="map-land" d="M392 150l-58 18-34 52 43 28 56-15 21-41z"/>
+            <path class="map-land" d="M495 189l50-2 54 28-4 42-66 22-39-24z"/>
+            <path class="map-land" d="M421 246l43-13 49 24 6 50-33 37-45-11-25-43z"/>
+            <g opacity=".65">
+              <line class="map-gridline" x1="0" y1="100" x2="900" y2="100"/>
+              <line class="map-gridline" x1="0" y1="200" x2="900" y2="200"/>
+              <line class="map-gridline" x1="0" y1="300" x2="900" y2="300"/>
+              <line class="map-gridline" x1="225" y1="0" x2="225" y2="430"/>
+              <line class="map-gridline" x1="450" y1="0" x2="450" y2="430"/>
+              <line class="map-gridline" x1="675" y1="0" x2="675" y2="430"/>
+            </g>
+
+            <g class="map-marker" onclick="selectMapLocation('Hyderabad','Telangana','Large delivery presence','Published location')" transform="translate(470 269)">
+              <circle r="9" fill="#0b69d1"/><text x="14" y="4">Hyderabad</text>
+            </g>
+            <g class="map-marker" onclick="selectMapLocation('Bengaluru','Karnataka','Large technology presence','Published location')" transform="translate(439 306)">
+              <circle r="9" fill="#0b9b83"/><text x="14" y="4">Bengaluru</text>
+            </g>
+            <g class="map-marker" onclick="selectMapLocation('Noida','Uttar Pradesh','Office presence','Published location')" transform="translate(442 150)">
+              <circle r="8" fill="#d98b00"/><text x="13" y="4">Noida</text>
+            </g>
+            <g class="map-marker" onclick="selectMapLocation('Pune','Maharashtra','Office presence','Published location')" transform="translate(417 266)">
+              <circle r="8" fill="#0b69d1"/><text x="13" y="4">Pune</text>
+            </g>
+            <g class="map-marker" onclick="selectMapLocation('Mumbai','Maharashtra','Office presence','Published location')" transform="translate(387 264)">
+              <circle r="8" fill="#0b9b83"/><text x="13" y="4">Mumbai</text>
+            </g>
+          </svg>
+
+          <div class="map-legend">
+            <span><i class="legend-dot legend-blue"></i>Large presence</span>
+            <span><i class="legend-dot legend-green"></i>Published location</span>
+            <span><i class="legend-dot legend-amber"></i>Highlighted</span>
+          </div>
+          <div class="map-tooltip" id="mapTooltip">
+            <strong id="tooltipName">Location</strong>
+            <span id="tooltipValue">Value</span>
+            <span id="tooltipStatus">Status</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card bi-map-detail" id="mapDetail">
+        <h3>Location details</h3>
+        <p class="sub">Click a marker on the map.</p>
+
+        <div class="map-detail-visual">
+          <div class="eco-badge">SELECT A MARKER</div>
+          <div class="map-detail-value">—</div>
+          <div class="map-detail-label">Company count / revenue range</div>
+        </div>
+
+        <div class="list" style="margin-top:14px">
+          <div class="list-item"><span>Region</span><b id="detailRegion">—</b></div>
+          <div class="list-item"><span>Data type</span><b id="detailType">—</b></div>
+          <div class="list-item"><span>Source</span><b>Official / demo</b></div>
+        </div>
+
+        <div class="map-source-note">◉ Demo values · source + date required in production</div>
+        <p class="map-note">Marker values are illustrative placeholders. Production data should use official filings or approved sources and clearly label estimates or unavailable values.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="view" id="bi-overview"><div class="page">
+  <div class="breadcrumb">Microsoft Business Intelligence / Global Overview</div>
+  <div class="title-row"><div><h1>Global Overview</h1><p class="sub">Latest official FY26 full-year financial picture, with Q4 context.</p></div><span class="source-badge">FY26 · Jun 30, 2026</span></div>
+
+  <div class="grid-4">
+    <div class="card metric"><div class="kicker">Revenue</div><div class="num">$331.8B</div><div class="delta">+18% YoY</div></div>
+    <div class="card metric"><div class="kicker">Operating income</div><div class="num">$155.2B</div><div class="delta">+21% YoY</div></div>
+    <div class="card metric"><div class="kicker">Net income</div><div class="num">$133.7B</div><div class="delta">+31% GAAP</div></div>
+    <div class="card metric"><div class="kicker">Microsoft Cloud</div><div class="num">$214.4B</div><div class="delta">+27% YoY</div></div>
+  </div>
+
+  <div class="section grid-2">
+    <div class="card"><h3>FY26 reportable segments</h3><table class="table"><thead><tr><th>Segment</th><th>Revenue</th><th>Operating income</th></tr></thead><tbody>
+      <tr><td>Productivity & Business Processes</td><td>$140.0B</td><td>$83.9B</td></tr>
+      <tr><td>Intelligent Cloud</td><td>$137.8B</td><td>$57.0B</td></tr>
+      <tr><td>More Personal Computing</td><td>$54.1B</td><td>$14.4B</td></tr>
+    </tbody></table></div>
+    <div class="card"><h3>Global headcount</h3><div class="list" style="margin-top:12px">
+      <div class="list-item"><span>Worldwide</span><b>223,000</b></div>
+      <div class="list-item"><span>United States</span><b>121,000</b></div>
+      <div class="list-item"><span>International</span><b>102,000</b></div>
+      <div class="list-item"><span>Product research & development</span><b>77,000</b></div>
+      <div class="list-item"><span>Operations</span><b>89,000</b></div>
+    </div></div>
+  </div>
+
+  <div class="section card"><h3>Executive intelligence rules</h3><div class="grid-3" style="margin-top:12px">
+    <div class="card"><b>Don't invent product profit</b><p class="sub">Use reportable segment operating income unless Microsoft separately discloses a product-level figure.</p></div>
+    <div class="card"><b>Don't invent company counts</b><p class="sub">Use official entity/registry data by jurisdiction and mark unknown / unavailable when not published.</p></div>
+    <div class="card"><b>Don't call demo data live</b><p class="sub">Every live card must carry source + timestamp + connector status.</p></div>
+  </div></div>
+</div></section>
+
+<section class="view" id="bi-regional"><div class="page">
+  <div class="breadcrumb">Microsoft Business Intelligence / Regional Overview</div>
+  <div class="title-row"><div><h1>Regional Overview</h1><p class="sub">Regional views must respect Microsoft's published reporting granularity.</p></div><span class="chip">Country detail varies by source</span></div>
+
+  <div class="section grid-2">
+    <div class="card"><h3>FY26 revenue by customer geography</h3><p class="sub">The 2026 10-K separately reports U.S. and other countries for revenue; it does not provide a complete exact revenue/profit table for every country in the financial statements.</p>
+      <div class="bi-chart"><div class="bi-bar" style="height:100%"><span>U.S. portion</span></div><div class="bi-bar" style="height:91%"><span>Other countries</span></div></div>
+      <div class="bi-xlabels"><span>United States</span><span>Other countries</span></div>
+    </div>
+    <div class="card"><h3>India intelligence</h3><p class="sub">Use official Microsoft India business-group pages and public disclosures for offices, services and presence. Financial/entity values should be displayed only where the source publishes them.</p>
+      <div class="list" style="margin-top:12px">
+        <div class="list-item"><span>Microsoft Corporation India</span><b>Published</b></div>
+        <div class="list-item"><span>India Global Delivery</span><b>Published</b></div>
+        <div class="list-item"><span>Customer Service & Support India</span><b>Published</b></div>
+        <div class="list-item"><span>Exact consolidated India profit</span><b>Source-dependent</b></div>
+      </div>
+      <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://www.microsoft.com/en-in/about/business-groups">Microsoft India business groups →</a>
+    </div>
+  </div>
+
+  <div class="section card"><h3>Country-by-country reporting</h3><p class="sub">Microsoft published a first Public Country-by-Country Report for FY25 covering countries/regions included under EU rules. It reports revenue, profit, employees and income tax accrued/paid for those covered jurisdictions. This is not the same as a universal global country-by-country financial database.</p>
+    <div class="tags"><span class="tag">FY25</span><span class="tag">Tax footprint</span><span class="tag">Employees</span><span class="tag">Revenue</span><span class="tag">Profit</span></div>
+    <a class="sub" target="_blank" style="display:block;margin-top:11px;color:#0b69d1" href="https://blogs.microsoft.com/on-the-issues/2026/06/30/context-on-our-country-by-country-tax-footprint/">Read Microsoft's report context →</a>
+  </div>
+
+  <div class="section card"><h3>Regional data confidence</h3><table class="table"><thead><tr><th>Region</th><th>Public financial granularity</th><th>Entity / office data</th><th>Recommended behavior</th></tr></thead><tbody>
+    <tr><td>United States</td><td>High</td><td>High</td><td>Use 10-K / IR as primary source</td></tr>
+    <tr><td>India</td><td>Selective</td><td>High for disclosed presence</td><td>Combine India pages + local filings / registries where needed</td></tr>
+    <tr><td>EU covered jurisdictions</td><td>Selected FY25 CbCR data</td><td>Jurisdiction-dependent</td><td>Show source year and accounting basis</td></tr>
+    <tr><td>Other countries</td><td>Aggregate / source-dependent</td><td>Source-dependent</td><td>Never interpolate exact profit</td></tr>
+  </tbody></table></div>
+</div></section>
+
+<section class="view" id="bi-segments"><div class="page">
+  <div class="breadcrumb">Microsoft Business Intelligence / Product & Segment</div>
+  <div class="title-row"><div><h1>Product & Segment Intelligence</h1><p class="sub">Use Microsoft's reportable segments, plus product metrics where Microsoft actually discloses them.</p></div></div>
+  <div class="grid-3">
+    <div class="card"><h3>Productivity & Business Processes</h3><p class="sub">FY26 revenue <b>$140.0B</b>; includes Microsoft 365, LinkedIn and Dynamics products/services.</p><div class="tags"><span class="tag">M365</span><span class="tag">LinkedIn</span><span class="tag">Dynamics</span></div></div>
+    <div class="card"><h3>Intelligent Cloud</h3><p class="sub">FY26 revenue <b>$137.8B</b>; includes Azure and other cloud services, server products and cloud services.</p><div class="tags"><span class="tag">Azure</span><span class="tag">Server</span><span class="tag">GitHub cloud services</span></div></div>
+    <div class="card"><h3>More Personal Computing</h3><p class="sub">FY26 revenue <b>$54.1B</b>; includes Windows, Devices, Gaming and Search advertising.</p><div class="tags"><span class="tag">Windows</span><span class="tag">Xbox</span><span class="tag">Search</span></div></div>
+  </div>
+  <div class="section card"><h3>Published product-level metrics · FY26</h3><table class="table"><thead><tr><th>Product / KPI</th><th>FY26 disclosure</th><th>Source note</th></tr></thead><tbody>
+    <tr><td>Azure & other cloud services</td><td>Revenue growth +41%</td><td>Microsoft FY26 10-K / earnings</td></tr>
+    <tr><td>Microsoft 365 Commercial cloud</td><td>Revenue growth +17%</td><td>Microsoft FY26 10-K / earnings</td></tr>
+    <tr><td>Microsoft 365 Consumer cloud</td><td>Revenue growth +28%</td><td>Microsoft FY26 10-K / earnings</td></tr>
+    <tr><td>LinkedIn</td><td>Revenue growth +11%</td><td>Microsoft FY26 10-K / earnings</td></tr>
+    <tr><td>Dynamics 365</td><td>Revenue growth +18%</td><td>Microsoft FY26 10-K / earnings</td></tr>
+    <tr><td>Commercial RPO</td><td>$678B</td><td>Microsoft FY26 metrics</td></tr>
+  </tbody></table><p class="sub" style="margin-top:10px">The platform must not calculate an exact “LinkedIn profit” or “GitHub profit” unless Microsoft publishes that figure.</p></div>
+</div></section>
+
+<section class="view" id="bi-entities"><div class="page">
+  <div class="breadcrumb">Microsoft Business Intelligence / Entities & Locations</div>
+  <div class="title-row"><div><h1>Entities & Locations Explorer</h1><p class="sub">Map legal entities, offices, data centers and reported footprints from authoritative sources.</p></div><button class="btn soft">Import registry data</button></div>
+  <div class="grid-3">
+    <div class="card"><h3>Corporate legal entities</h3><p class="sub">Use local registries, corporate legal pages and statutory filings. Track entity name, jurisdiction, registration identifier and effective date.</p></div>
+    <div class="card"><h3>Offices & facilities</h3><p class="sub">Use Microsoft property / local pages and the 10-K. Distinguish owned, leased and office/datacenter footprints.</p></div>
+    <div class="card"><h3>Country footprint</h3><p class="sub">Merge public disclosures with a source/year field. Never convert a disclosure gap into a guessed company count.</p></div>
+  </div>
+  <div class="section card"><h3>Example official disclosures</h3><div class="list">
+    <div class="list-item"><span>Worldwide full-time employees</span><b>223,000</b></div>
+    <div class="list-item"><span>International employees</span><b>102,000</b></div>
+    <div class="list-item"><span>U.S. employees</span><b>121,000</b></div>
+    <div class="list-item"><span>International properties</span><b>47M sq ft</b></div>
+    <div class="list-item"><span>U.S. properties</span><b>65M sq ft</b></div>
+  </div><p class="sub" style="margin-top:11px">The 10-K also identifies large international owned/leased property locations including India, China, Ireland, the Netherlands, Sweden and others.</p></div>
+</div></section>
+
+<section class="view" id="bi-risk"><div class="page">
+  <div class="breadcrumb">Microsoft Business Intelligence / Risk & Compliance</div>
+  <div class="title-row"><div><h1>Risk & Compliance Intelligence</h1><p class="sub">Business-level anomalies, fraud indicators, licensing/voucher misuse and documented compliance workflows.</p></div></div>
+  <div class="grid-2">
+    <div class="card"><h3>Trust & safety signals</h3><div class="list" style="margin-top:12px">
+      <div class="list-item"><span>Voucher / license resale language</span><span class="risk high">HIGH</span></div>
+      <div class="list-item"><span>Credential exposure</span><span class="risk high">HIGH</span></div>
+      <div class="list-item"><span>Bulk API abuse</span><span class="risk med">MEDIUM</span></div>
+      <div class="list-item"><span>Policy / terms bypass request</span><span class="risk high">HIGH</span></div>
+    </div></div>
+    <div class="card"><h3>Compliance workflow</h3><div class="workflow"><span class="node">Detect</span><span class="arr">→</span><span class="node">Verify</span><span class="arr">→</span><span class="node">Review</span><span class="arr">→</span><span class="node">Document</span><span class="arr">→</span><span class="node">Escalate</span></div><p class="sub" style="margin-top:13px">For worker misconduct or partner issues, use authorized HR/legal/compliance procedures; the agent should not impersonate investigators or make unsupported accusations.</p></div>
+  </div>
+  <div class="section card"><h3>Financial / usage exception signals</h3><table class="table"><thead><tr><th>Signal</th><th>Example</th><th>Agent action</th></tr></thead><tbody>
+    <tr><td>Unexpected spend</td><td>Credit balance drops faster than expected</td><td>Verify usage + billing source</td></tr>
+    <tr><td>API spike</td><td>Sudden request volume / throttling</td><td>Rate-limit + workload review</td></tr>
+    <tr><td>License anomaly</td><td>Unusual assignment / activation pattern</td><td>Verify entitlement + authorized admin review</td></tr>
+    <tr><td>Credential anomaly</td><td>Secret appears in logs / prompt</td><td>Redact + rotate through approved process</td></tr>
+  </tbody></table></div>
+</div></section>
+
+<section class="view" id="bi-finance"><div class="page">
+  <div class="breadcrumb">Microsoft Business Intelligence / Finance & Usage Anomalies</div>
+  <div class="title-row"><div><h1>Finance & Usage Anomalies</h1><p class="sub">Detect unusual patterns without pretending internal financial data is publicly available.</p></div><span class="chip">Data-source dependent</span></div>
+  <div class="grid-3">
+    <div class="card"><h3>Credit anomaly</h3><p class="sub">Compare current authorized Azure usage against expected workload and available credit balance.</p><button class="btn soft" style="margin-top:13px" onclick="alert('Demo: connect Azure Cost Management / billing data with least-privilege access.')">Run demo</button></div>
+    <div class="card"><h3>API usage anomaly</h3><p class="sub">Detect spikes, repeated 429s, abnormal retry storms and unusual endpoint patterns.</p><button class="btn soft" style="margin-top:13px" onclick="alert('Demo: connect gateway telemetry / provider metrics.')">Run demo</button></div>
+    <div class="card"><h3>Business KPI anomaly</h3><p class="sub">Compare published quarter/year metrics and flag source/date inconsistencies rather than fabricating missing data.</p><button class="btn soft" style="margin-top:13px" onclick="alert('Demo: compare official IR / SEC datasets.')">Run demo</button></div>
+  </div>
+  <div class="section card"><h3>What the agent refuses to do</h3><div class="tags"><span class="tag">Invent internal revenue</span><span class="tag">Guess subsidiary profit</span><span class="tag">Expose credentials</span><span class="tag">Fabricate live incidents</span><span class="tag">Override access controls</span></div></div>
+</div></section>
+
+<section class="view" id="bi-sources"><div class="page">
+  <div class="breadcrumb">Microsoft Business Intelligence / Data Sources</div>
+  <div class="title-row"><div><h1>Data Sources & Provenance</h1><p class="sub">Every executive metric should carry a source, date, scope and freshness status.</p></div><button class="btn dark">Refresh sources</button></div>
+  <div class="source-list">
+    <a class="card" target="_blank" href="https://www.microsoft.com/en-us/investor/earnings/fy-2026-q4/press-release-webcast"><h3>Microsoft Investor Relations</h3><p class="sub">FY26 Q4 and FY26 results, segments and product metrics.</p><span class="source-badge">Official</span></a>
+    <a class="card" target="_blank" href="https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/msft-20260630.htm"><h3>SEC · Microsoft 10-K FY26</h3><p class="sub">Annual filing, employees, properties, risks and audited financial statements.</p><span class="source-badge">SEC</span></a>
+    <a class="card" target="_blank" href="https://www.microsoft.com/en-in/about/business-groups"><h3>Microsoft India</h3><p class="sub">India business groups, locations and support presence.</p><span class="source-badge">Official</span></a>
+    <a class="card" target="_blank" href="https://blogs.microsoft.com/on-the-issues/2026/06/30/context-on-our-country-by-country-tax-footprint/"><h3>Country-by-Country Report</h3><p class="sub">FY25 public tax-footprint reporting for covered jurisdictions.</p><span class="source-badge">Official</span></a>
+    <a class="card" target="_blank" href="https://www.microsoft.com/en-us/investor/investor-information"><h3>Investor Information Hub</h3><p class="sub">Annual reports, filings and shareholder materials.</p><span class="source-badge">Official</span></a>
+    <a class="card" target="_blank" href="https://www.microsoft.com/en-us/corporate-responsibility/reports-hub"><h3>Microsoft Reports Hub</h3><p class="sub">Responsible AI, sustainability, privacy and transparency reports.</p><span class="source-badge">Official</span></a>
+  </div>
+  <div class="section card"><h3>Provenance contract</h3><table class="table"><thead><tr><th>Field</th><th>Required</th></tr></thead><tbody>
+    <tr><td>Source URL / document ID</td><td>Yes</td></tr>
+    <tr><td>Published / filing date</td><td>Yes</td></tr>
+    <tr><td>Fiscal / reporting period</td><td>Yes</td></tr>
+    <tr><td>Geography / population scope</td><td>Yes</td></tr>
+    <tr><td>Last refreshed</td><td>Yes for live connectors</td></tr>
+    <tr><td>Confidence / completeness</td><td>Yes</td></tr>
+  </tbody></table></div>
+</div></section>
+
+<!-- MICROSOFT ECOSYSTEM CENTER -->
+<section class="view ecosystem-center" id="ms-ecosystem"><div class="page">
+  <div class="breadcrumb">Microsoft Ecosystem / Unified Center</div>
+  <div class="title-row">
+    <div>
+      <h1>Microsoft Ecosystem Center</h1>
+      <p class="sub">One operating surface for Microsoft cloud, AI, identity, security, data, developer, collaboration, certification and partner ecosystems. Production connectors require the user's authorized credentials and the relevant Microsoft APIs.</p>
+    </div>
+    <span class="chip">Architecture + live-data ready</span>
+  </div>
+
+  <div class="hero" style="padding:30px 34px">
+    <div class="eyebrow">Microsoft data → diagnostics → action</div>
+    <h1 style="font-size:31px">Bring the right Microsoft signal to the right agent.</h1>
+    <p>The platform is designed so the Copilot can classify a problem, retrieve authorized Microsoft data, consult official knowledge, explain the issue, and route to the correct support or remediation workflow.</p>
+    <div class="pills">
+      <span class="pill">Microsoft Graph</span><span class="pill">Foundry</span><span class="pill">Azure Monitor</span><span class="pill">Service Health</span>
+      <span class="pill">Fabric</span><span class="pill">Security Graph</span><span class="pill">Purview</span><span class="pill">Intune</span>
+      <span class="pill">Partner Center</span><span class="pill">Microsoft Learn</span><span class="pill">GitHub</span><span class="pill">LinkedIn APIs</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="title-row">
+      <div><h2>Microsoft solution areas</h2><p class="sub">Broad coverage of the major ecosystems that fit this platform.</p></div>
+    </div>
+    <div class="grid-3">
+
+      <div class="card">
+        <h3>🤖 Microsoft Foundry</h3>
+        <p class="sub">AI agents, model catalog, tools/toolboxes, conversations, responses, lifecycle, evaluations and publishing.</p>
+        <div class="tags"><span class="tag">Agent Runtime</span><span class="tag">Tools</span><span class="tag">Evaluations</span></div>
+        <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://learn.microsoft.com/en-us/azure/ai-foundry/agents/overview">Official docs →</a>
+      </div>
+
+      <div class="card">
+        <h3>🔐 Microsoft Entra</h3>
+        <p class="sub">Identity, access, governance, authentication, permissions and agent identity controls.</p>
+        <div class="tags"><span class="tag">Entra ID</span><span class="tag">Permissions</span><span class="tag">Zero Trust</span></div>
+        <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://learn.microsoft.com/en-us/entra/fundamentals/what-is-entra">Official docs →</a>
+      </div>
+
+      <div class="card">
+        <h3>📊 Microsoft Graph</h3>
+        <p class="sub">Authorized access gateway to Microsoft 365, Entra, Intune, SharePoint, Teams, OneDrive, Outlook, Partner Center and more.</p>
+        <div class="tags"><span class="tag">M365</span><span class="tag">Users</span><span class="tag">Teams</span><span class="tag">SharePoint</span></div>
+        <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://learn.microsoft.com/en-us/graph/overview">Official docs →</a>
+      </div>
+
+      <div class="card">
+        <h3>🔎 Azure AI Search / RAG</h3>
+        <p class="sub">Ground agent answers on approved content using retrieval, chunking, indexing and permission-aware knowledge patterns.</p>
+        <div class="tags"><span class="tag">Knowledge</span><span class="tag">Search</span><span class="tag">Grounding</span></div>
+        <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://learn.microsoft.com/en-us/azure/search/retrieval-augmented-generation-overview">Official docs →</a>
+      </div>
+
+      <div class="card">
+        <h3>📡 Fabric Real-Time Intelligence</h3>
+        <p class="sub">Ingest, process, analyze and act on streaming events, telemetry, logs and geospatial signals.</p>
+        <div class="tags"><span class="tag">IoT</span><span class="tag">Streaming</span><span class="tag">Geospatial</span></div>
+        <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://learn.microsoft.com/en-us/fabric/real-time-intelligence/overview">Official docs →</a>
+      </div>
+
+      <div class="card">
+        <h3>🛡 Microsoft Defender</h3>
+        <p class="sub">Security alerts, incidents, endpoint/identity/email/application protection and security operations integrations.</p>
+        <div class="tags"><span class="tag">XDR</span><span class="tag">Incidents</span><span class="tag">Threats</span></div>
+        <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://learn.microsoft.com/en-us/defender-xdr/microsoft-365-defender">Official docs →</a>
+      </div>
+
+      <div class="card">
+        <h3>🔏 Microsoft Purview</h3>
+        <p class="sub">Data security, governance, policy evaluation, discovery and compliance signals for sensitive-data workflows.</p>
+        <div class="tags"><span class="tag">Data protection</span><span class="tag">Governance</span><span class="tag">Compliance</span></div>
+        <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://learn.microsoft.com/en-us/graph/security-datasecurityandgovernance-overview">Official docs →</a>
+      </div>
+
+      <div class="card">
+        <h3>📱 Microsoft Intune</h3>
+        <p class="sub">Device enrollment, configuration, app management, security policies and device/data protection.</p>
+        <div class="tags"><span class="tag">Devices</span><span class="tag">App Protection</span><span class="tag">Zero Trust</span></div>
+        <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://learn.microsoft.com/en-us/intune/">Official docs →</a>
+      </div>
+
+      <div class="card">
+        <h3>🧭 Azure Service Health</h3>
+        <p class="sub">Official health and incident signals across Azure services and regions, plus personalized Service Health.</p>
+        <div class="tags"><span class="tag">Incidents</span><span class="tag">Regions</span><span class="tag">Maintenance</span></div>
+        <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://learn.microsoft.com/en-us/azure/service-health/azure-status-overview">Official docs →</a>
+      </div>
+
+      <div class="card">
+        <h3>📈 Azure Monitor / Application Insights</h3>
+        <p class="sub">Application telemetry, performance, failures, availability, usage and alerting for platform operations.</p>
+        <div class="tags"><span class="tag">Monitoring</span><span class="tag">App monitoring</span><span class="tag">Alerts</span></div>
+        <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://learn.microsoft.com/en-us/azure/azure-monitor/app/metrics-overview">Official docs →</a>
+      </div>
+
+      <div class="card">
+        <h3>👥 Microsoft 365</h3>
+        <p class="sub">Teams, Outlook, SharePoint, OneDrive, Planner, To Do and other productivity services exposed through Graph where authorized.</p>
+        <div class="tags"><span class="tag">Teams</span><span class="tag">Outlook</span><span class="tag">SharePoint</span></div>
+        <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://learn.microsoft.com/en-us/graph/overview">Graph gateway →</a>
+      </div>
+
+      <div class="card">
+        <h3>💼 Partner Center</h3>
+        <p class="sub">Authorized partner integrations can manage customer, subscription and order data through Partner Center APIs.</p>
+        <div class="tags"><span class="tag">Customers</span><span class="tag">Subscriptions</span><span class="tag">Orders</span></div>
+        <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://learn.microsoft.com/en-us/partner-center/developer/get-started">Official docs →</a>
+      </div>
+
+      <div class="card">
+        <h3>🎓 Microsoft Learn & Credentials</h3>
+        <p class="sub">Certification discovery, preparation, exam registration, results, renewal and Applied Skills pathways.</p>
+        <div class="tags"><span class="tag">Certifications</span><span class="tag">Applied Skills</span><span class="tag">Exam Help</span></div>
+        <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://learn.microsoft.com/en-us/credentials/certifications/certification-process-overview">Official docs →</a>
+      </div>
+
+      <div class="card">
+        <h3>🐙 GitHub</h3>
+        <p class="sub">Developer workflow integration can use authorized GitHub Apps/OAuth, repositories, issues, pull requests and webhooks, with API rate-limit controls.</p>
+        <div class="tags"><span class="tag">Repos</span><span class="tag">Issues</span><span class="tag">Webhooks</span><span class="tag">Rate Limits</span></div>
+        <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api">Official docs →</a>
+      </div>
+
+      <div class="card">
+        <h3>💼 LinkedIn APIs</h3>
+        <p class="sub">Authorized LinkedIn Marketing APIs cover campaign management, reporting, leads, community management and related business integrations. Access depends on API permissions and program requirements.</p>
+        <div class="tags"><span class="tag">Marketing</span><span class="tag">Analytics</span><span class="tag">Lead Sync</span></div>
+        <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://learn.microsoft.com/en-us/linkedin/marketing/overview">Official docs →</a>
+      </div>
+
+      <div class="card">
+        <h3>🤝 Security Copilot</h3>
+        <p class="sub">Security-focused AI workflows can support investigations, threat operations and custom/partner agents with governed access.</p>
+        <div class="tags"><span class="tag">SOC</span><span class="tag">Security AI</span><span class="tag">Agents</span></div>
+        <a class="sub" target="_blank" style="display:block;margin-top:10px;color:#0b69d1" href="https://learn.microsoft.com/en-us/copilot/security/">Official docs →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="section card">
+    <h3>Microsoft data & integration matrix</h3>
+    <p class="sub">This table is an architectural map; it does not imply the app already has access to these services.</p>
+    <table class="table" style="margin-top:10px">
+      <thead><tr><th>Source / platform</th><th>Data or signal</th><th>Agent / module</th><th>Production status</th></tr></thead>
+      <tbody>
+        <tr><td>Microsoft Graph</td><td>Users, groups, Teams, Outlook, SharePoint, OneDrive, Intune, Partner Center</td><td>Identity / M365 / Profile</td><td>Connector-ready</td></tr>
+        <tr><td>Foundry</td><td>Agent runs, conversations, model/tool interactions</td><td>AI Copilot / Agent Ops</td><td>Connector-ready</td></tr>
+        <tr><td>Azure AI Search</td><td>Indexed knowledge / retrieval results</td><td>Knowledge & RAG</td><td>Connector-ready</td></tr>
+        <tr><td>Service Health</td><td>Incidents, planned maintenance, service advisories</td><td>Outage & Reliability</td><td>Connector-ready</td></tr>
+        <tr><td>Azure Monitor / App Insights</td><td>Telemetry, metrics, failures, availability, usage</td><td>Observability</td><td>Connector-ready</td></tr>
+        <tr><td>Graph Security / Defender</td><td>Alerts, incidents, security context</td><td>Security / Safety</td><td>Permission-gated</td></tr>
+        <tr><td>Purview</td><td>Data-governance and compliance signals</td><td>Privacy / Governance</td><td>Permission-gated</td></tr>
+        <tr><td>Partner Center</td><td>Customer, subscription, order data</td><td>Partner Operations</td><td>Partner access required</td></tr>
+        <tr><td>Learn / Credentials</td><td>Certification and credential workflows</td><td>Certification Hub</td><td>Official support / permitted APIs only</td></tr>
+        <tr><td>GitHub</td><td>Repos, issues, PRs and webhook events</td><td>Developer Agent</td><td>OAuth / App required</td></tr>
+        <tr><td>LinkedIn</td><td>Marketing and organization-authorized analytics</td><td>Community / Growth</td><td>Approved API access required</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section card">
+    <h3>Problem → Solution map</h3>
+    <div class="grid-3" style="margin-top:12px">
+      <div class="card"><b>403 / Access denied</b><p class="sub">Entra + RBAC diagnostic → role/scope verification → official documentation/support.</p></div>
+      <div class="card"><b>Foundry deployment failure</b><p class="sub">Region + model availability + quota + resource connection checks.</p></div>
+      <div class="card"><b>Service outage</b><p class="sub">Service Health → identify provider incident → pause aggressive retries → fallback.</p></div>
+      <div class="card"><b>RAG answer not grounded</b><p class="sub">Search/index status → retrieval inspection → source citation → safe fallback.</p></div>
+      <div class="card"><b>Credential / voucher issue</b><p class="sub">Eligibility → terms → masked entitlement handling → authorized support.</p></div>
+      <div class="card"><b>API 429 / throttling</b><p class="sub">Rate-limit detection → bounded retry/backoff → quota review.</p></div>
+      <div class="card"><b>Security incident</b><p class="sub">Graph Security / Defender context → risk classification → human review → response.</p></div>
+      <div class="card"><b>Privacy concern</b><p class="sub">Minimize data → redact secrets/PII → apply governance → audit.</p></div>
+      <div class="card"><b>Developer workflow issue</b><p class="sub">GitHub App/OAuth → webhook/event check → repository/PR diagnostics → rate-limit aware actions.</p></div>
+    </div>
+  </div>
+
+  <div class="section card">
+    <h3>Shared system prompt</h3>
+    <div class="evidence-box" style="margin-top:11px">
+      You are a safety, compliance, and reliability assistant for a multi-agent platform that covers Microsoft-related ecosystems and integrations, such as Azure, GitHub, LinkedIn, partner or program ecosystems, credits and promotions, and third-party integrations including OpenAI-based features. Assess requests, content, and workflows for misuse, policy violations, fraud, or operational risk across domains like identity and access, licensing and vouchers, credits and promotions, data privacy, API usage and rate limits, monitoring and auditability, outages and provider limits, platform compatibility, partner or program abuse, certification fraud, integration safety, and finance or usage anomalies. Never generate, validate, store, or help distribute secrets, keys, license codes, vouchers, coupons, or premium benefits. Do not assist with bypassing safeguards or terms of service. When risk is detected, output a risk level, a brief explanation, and safe actions such as user education, verification, internal review, logging, and escalation to official support or administrators. Refuse requests that would enable fraud, unauthorized access, or data leakage. For normal requests, route to the correct specialist agent and provide concise, policy-aligned guidance. If a request depends on external data, like finance metrics, company counts, or live incidents, request the data source or ask for clarification instead of guessing. Always log key decisions for auditing, monitoring, and continuous improvement.
+    </div>
+  </div>
+</div></section>
+
+<!-- MICROSOFT PROBLEM CENTER -->
+
+<section class="view" id="problem-center">
+  <div class="page">
+
+    <div class="breadcrumb">Platform / Microsoft Problem Center</div>
+
+    <div class="title-row">
+      <div>
+        <h1>Microsoft Problem Center</h1>
+        <p class="sub">Simple troubleshooting cards for common access, Azure, billing, sync and support issues.</p>
+      </div>
+      <span class="chip">Demo mode</span>
+    </div>
+
+    <div class="grid-4">
+      <div class="card metric"><div class="kicker">Problem areas</div><div class="num">10</div><div class="delta">demo categories</div></div>
+      <div class="card metric"><div class="kicker">Diagnostic agents</div><div class="num">08</div><div class="delta">specialist flows</div></div>
+      <div class="card metric"><div class="kicker">Safety checks</div><div class="num">12</div><div class="delta">policy-aware</div></div>
+      <div class="card metric"><div class="kicker">Source links</div><div class="num">12+</div><div class="delta">official references</div></div>
+    </div>
+
+    <div class="section card">
+      <h3>How it works</h3>
+      <div class="workflow">
+        <span class="node">Report issue</span><span class="arr">→</span>
+        <span class="node">Find category</span><span class="arr">→</span>
+        <span class="node">Run diagnostic</span><span class="arr">→</span>
+        <span class="node">Check source</span><span class="arr">→</span>
+        <span class="node">Next step</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="title-row">
+        <div>
+          <h2>Problem Areas</h2>
+          <p class="sub">Choose a problem to start a guided check.</p>
+        </div>
+      </div>
+
+      <div class="problem-grid">
+
+        <article class="card problem-card tint-blue">
+          <div class="problem-top"><span class="problem-number">01</span><span class="eco-badge">Access</span></div>
+          <h4>Sign-in & MFA</h4>
+          <p>Check account, MFA and access policy issues.</p>
+          <div class="tags"><span class="tag">Entra</span><span class="tag">Access</span></div>
+          <div class="meta"><span class="creator">Identity Agent</span><button class="btn soft" onclick="showDiagnostic('Identity & Sign-in Agent')">Learn more →</button></div>
+        </article>
+
+        <article class="card problem-card tint-green">
+          <div class="problem-top"><span class="problem-number">02</span><span class="eco-badge">Students</span></div>
+          <h4>Student Verification</h4>
+          <p>Check academic verification and account linking.</p>
+          <div class="tags"><span class="tag">Azure</span><span class="tag">Student</span></div>
+          <div class="meta"><span class="creator">Student Agent</span><button class="btn soft" onclick="showDiagnostic('Student Eligibility Agent')">Learn more →</button></div>
+        </article>
+
+        <article class="card problem-card tint-amber">
+          <div class="problem-top"><span class="problem-number">03</span><span class="eco-badge">Billing</span></div>
+          <h4>Credits & Spending</h4>
+          <p>Check credits, spending limits and subscription status.</p>
+          <div class="tags"><span class="tag">Billing</span><span class="tag">Azure</span></div>
+          <div class="meta"><span class="creator">Cost Agent</span><button class="btn soft" onclick="showDiagnostic('Azure Subscription & Cost Agent')">Learn more →</button></div>
+        </article>
+
+        <article class="card problem-card tint-purple">
+          <div class="problem-top"><span class="problem-number">04</span><span class="eco-badge">Azure</span></div>
+          <h4>Foundry Deployment</h4>
+          <p>Check region, model, quota and deployment issues.</p>
+          <div class="tags"><span class="tag">Foundry</span><span class="tag">Quota</span></div>
+          <div class="meta"><span class="creator">Foundry Agent</span><button class="btn soft" onclick="showDiagnostic('Foundry Deployment Agent')">Learn more →</button></div>
+        </article>
+
+        <article class="card problem-card tint-red">
+          <div class="problem-top"><span class="problem-number">05</span><span class="eco-badge">Access</span></div>
+          <h4>RBAC & Permissions</h4>
+          <p>Check role, scope and authorization settings.</p>
+          <div class="tags"><span class="tag">Permissions</span><span class="tag">Entra</span></div>
+          <div class="meta"><span class="creator">RBAC Agent</span><button class="btn soft" onclick="showDiagnostic('RBAC Permission Agent')">Learn more →</button></div>
+        </article>
+
+        <article class="card problem-card tint-purple">
+          <div class="problem-top"><span class="problem-number">06</span><span class="eco-badge">Credentials</span></div>
+          <h4>Certification Profile</h4>
+          <p>Check exam profile and credential support steps.</p>
+          <div class="tags"><span class="tag">Exam</span><span class="tag">Learn</span></div>
+          <div class="meta"><span class="creator">Credential Agent</span><button class="btn soft" onclick="showDiagnostic('Certification Profile Agent')">Learn more →</button></div>
+        </article>
+
+        <article class="card problem-card tint-amber">
+          <div class="problem-top"><span class="problem-number">07</span><span class="eco-badge">Voucher</span></div>
+          <h4>Voucher Redemption</h4>
+          <p>Check eligibility, expiry and redemption guidance.</p>
+          <div class="tags"><span class="tag">Voucher</span><span class="tag">Support</span></div>
+          <div class="meta"><span class="creator">Entitlement Agent</span><button class="btn soft" onclick="showDiagnostic('Voucher & Entitlement Agent')">Learn more →</button></div>
+        </article>
+
+        <article class="card problem-card tint-cyan">
+          <div class="problem-top"><span class="problem-number">08</span><span class="eco-badge">Sync</span></div>
+          <h4>Learn Progress Sync</h4>
+          <p>Check progress, transcript and credential sync issues.</p>
+          <div class="tags"><span class="tag">Sync</span><span class="tag">Learn</span></div>
+          <div class="meta"><span class="creator">Learning Agent</span><button class="btn soft" onclick="showDiagnostic('Learning Sync Agent')">Learn more →</button></div>
+        </article>
+
+        <article class="card problem-card tint-blue">
+          <div class="problem-top"><span class="problem-number">09</span><span class="eco-badge">M365</span></div>
+          <h4>Teams & Microsoft 365</h4>
+          <p>Check sign-in, license and access problems.</p>
+          <div class="tags"><span class="tag">Teams</span><span class="tag">M365</span></div>
+          <div class="meta"><span class="creator">M365 Agent</span><button class="btn soft" onclick="showDiagnostic('Microsoft 365 Access Agent')">Learn more →</button></div>
+        </article>
+
+        <article class="card problem-card tint-green">
+          <div class="problem-top"><span class="problem-number">10</span><span class="eco-badge">Azure</span></div>
+          <h4>Deployment Errors</h4>
+          <p>Check provider, resource and region settings.</p>
+          <div class="tags"><span class="tag">ARM</span><span class="tag">Bicep</span></div>
+          <div class="meta"><span class="creator">Azure Deploy Agent</span><button class="btn soft" onclick="showDiagnostic('Azure Deployment Agent')">Learn more →</button></div>
+        </article>
+
+      </div>
+    </div>
+
+    <div class="section grid-2">
+      <div class="card">
+        <h3>Diagnostic agents</h3>
+        <div class="list" style="margin-top:12px">
+          <div class="list-item"><span>Identity & Sign-in</span><span class="eco-badge">Access</span></div>
+          <div class="list-item"><span>Student Eligibility</span><span class="eco-badge">Student</span></div>
+          <div class="list-item"><span>Azure Subscription & Cost</span><span class="eco-badge">Billing</span></div>
+          <div class="list-item"><span>Foundry Deployment</span><span class="eco-badge">Azure</span></div>
+          <div class="list-item"><span>Learning Sync</span><span class="eco-badge">Sync</span></div>
+        </div>
+      </div>
+
+      <div class="card" id="diagnostic-result">
+        <h3>Diagnostic output</h3>
+        <p class="sub">Run a card check to see the mock result here.</p>
+        <div class="evidence-box" style="margin-top:12px">
+          Risk: MEDIUM<br>
+          Evidence: example error pattern found.<br>
+          Next step: verify the account, check the relevant service and use the official support path.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- MICROSOFT -->
+<section class="view" id="microsoft"><div class="page">
+  <div class="breadcrumb">Microsoft Ecosystem</div><div class="title-row"><div><h1>Microsoft AI Stack</h1><p class="sub">Microsoft capabilities mapped to the platform. Live access is permission-gated and connector-dependent.</p></div></div>
+  <div class="grid-3">
+    <div class="card"><h3>Microsoft Foundry Agent Service</h3><p class="sub">Agent runtime, tools, models, observability, evaluations, safety and publishing.</p><div class="tags"><span class="tag">Agents</span><span class="tag">Tracing</span><span class="tag">Evaluation</span></div></div>
+    <div class="card"><h3>Foundry Toolbox / MCP</h3><p class="sub">Centralize approved tools, credentials, governance and discovery for many agents.</p><div class="tags"><span class="tag">Tools</span><span class="tag">MCP</span><span class="tag">Governance</span></div></div>
+    <div class="card"><h3>Foundry IQ / Azure AI Search</h3><p class="sub">Ground agents with knowledge sources, retrieval and permission-aware knowledge patterns.</p><div class="tags"><span class="tag">Knowledge</span><span class="tag">Search</span></div></div>
+    <div class="card"><h3>Agent 365 / Entra identity</h3><p class="sub">Agent identity, access control, governance, lifecycle and enterprise oversight.</p><div class="tags"><span class="tag">Identity</span><span class="tag">Permissions</span></div></div>
+    <div class="card"><h3>Observability & Evaluation</h3><p class="sub">Trace runs, monitor health, evaluate outputs and test safety before production.</p><div class="tags"><span class="tag">App Insights</span><span class="tag">Evaluations</span></div></div>
+    <div class="card"><h3>Defender / Purview</h3><p class="sub">Enterprise security, threat monitoring, data protection and compliance controls.</p><div class="tags"><span class="tag">Security</span><span class="tag">Compliance</span></div></div>
+  </div>
+  <div class="section card"><h3>Production architecture</h3><div class="workflow"><span class="node">React</span><span class="arr">→</span><span class="node">FastAPI</span><span class="arr">→</span><span class="node">Foundry Agent Service</span><span class="arr">→</span><span class="node">Toolbox / MCP</span><span class="arr">→</span><span class="node">Foundry IQ / Search</span><span class="arr">→</span><span class="node">Safety + Observability</span><span class="arr">→</span><span class="node">Fabric / BI</span></div></div>
+</div></section>
+
+<!-- CERTIFICATION -->
+<section class="view" id="certifications"><div class="page">
+  <div class="breadcrumb">Microsoft Ecosystem / Certification Hub</div><div class="title-row"><div><h1>Certification & Exam Hub</h1><p class="sub">A personal Microsoft learning workspace for planning, practice and credential tracking.</p></div><button class="btn soft">Add certification</button></div>
+  <div class="grid-4"><div class="card metric"><div class="kicker">Active plans</div><div class="num">03</div></div><div class="card metric"><div class="kicker">Practice questions</div><div class="num">420</div></div><div class="card metric"><div class="kicker">Avg. readiness</div><div class="num">78%</div></div><div class="card metric"><div class="kicker">Credentials</div><div class="num">04</div></div></div>
+  <div class="section grid-2">
+    <div class="card"><h3>My exam plans</h3><div class="list" style="margin-top:12px"><div class="list-item"><div><b style="font-size:12px">Azure Fundamentals</b><small style="display:block;color:var(--muted)">8 topics · 72% complete</small></div><span class="risk low">ON TRACK</span></div><div class="list-item"><div><b style="font-size:12px">AI Fundamentals</b><small style="display:block;color:var(--muted)">5 topics · 64% complete</small></div><span class="risk med">PRACTICE</span></div><div class="list-item"><div><b style="font-size:12px">Data / Analytics</b><small style="display:block;color:var(--muted)">9 topics · 41% complete</small></div><span class="risk med">BUILD</span></div></div></div>
+    <div class="card"><h3>Today</h3><div class="timeline"><div><strong>20 min · Mock exam</strong><small>40 questions · timed</small></div><div><strong>15 min · Weak topic</strong><small>Identity and governance</small></div><div><strong>10 min · Review</strong><small>Yesterday's missed questions</small></div></div></div>
+  </div>
+</div></section>
+
+<!-- VOUCHERS -->
+<section class="view" id="vouchers"><div class="page">
+  <div class="breadcrumb">Microsoft Ecosystem / Voucher Protection</div><div class="title-row"><div><h1>Voucher & Entitlements</h1><p class="sub">Secure entitlement management UX. Demo records only.</p></div><span class="chip">Sensitive fields masked</span></div>
+  <div class="grid-2">
+    <div class="card"><h3>Certification voucher</h3><p class="sub">Eligible program: Verified student / program membership</p><div style="font-size:27px;letter-spacing:4px;margin:18px 0">•••• •••• ••••</div><div class="row"><span class="risk low">ELIGIBILITY VERIFIED</span><button class="btn soft" onclick="alert('Demo only: a production system should use server-side authorization and issuer-side validation.')">Reveal flow</button></div></div>
+    <div class="card"><h3>Protection controls</h3><div class="list" style="margin-top:12px"><div class="list-item"><span>Server-side authorization</span><b>ON</b></div><div class="list-item"><span>One-time redemption guard</span><b>ON</b></div><div class="list-item"><span>Audit trail</span><b>ON</b></div><div class="list-item"><span>Client secret exposure</span><b>BLOCKED</b></div></div></div>
+  </div>
+  <div class="section card"><h3>Voucher safety lifecycle</h3><div class="workflow"><span class="node">Eligibility</span><span class="arr">→</span><span class="node">Server authorization</span><span class="arr">→</span><span class="node">Short reveal</span><span class="arr">→</span><span class="node">Redeem</span><span class="arr">→</span><span class="node">Audit</span></div><p class="sub" style="margin-top:14px">Never store sensitive codes in source control, client-side JavaScript, browser storage or analytics events.</p></div>
+</div></section>
+
+<!-- PROFILE -->
+<section class="view" id="profile"><div class="page">
+  <div class="breadcrumb">Account / Profile Dashboard</div><div class="profile">
+    <div class="card profile-card"><div class="profile-photo">SK</div><h2>Sunny Kumar</h2><p class="sub">Student Builder · Rural Guardian Intelligence Platform</p><div class="profile-stats"><div><b>06</b><span>Agents</span></div><div><b>04</b><span>Credentials</span></div><div><b>78%</b><span>Readiness</span></div></div><button class="btn dark" style="margin-top:17px;width:100%">Edit profile</button></div>
+    <div class="grid-2"><div class="card"><h3>Skills & interests</h3><div class="tags"><span class="tag">AI Agents</span><span class="tag">Azure</span><span class="tag">React</span><span class="tag">FastAPI</span><span class="tag">Knowledge</span><span class="tag">Cloud</span></div></div><div class="card"><h3>Recent activity</h3><div class="timeline"><div><strong>Opened Abuse Monitor</strong><small>Today · 8:19 PM</small></div><div><strong>Completed exam plan topic</strong><small>Today · 6:40 PM</small></div><div><strong>Uploaded knowledge source</strong><small>Yesterday · 11:05 AM</small></div></div></div><div class="card" style="grid-column:1/-1"><h3>Credential & project portfolio</h3><table class="table" style="margin-top:9px"><thead><tr><th>Item</th><th>Type</th><th>Status</th><th>Last updated</th></tr></thead><tbody><tr><td>Microsoft learning credential</td><td>Credential</td><td>Verified</td><td>Sep 2026</td></tr><tr><td>Rural Guardian Intelligence Platform</td><td>Project</td><td>Active</td><td>Sep 2026</td></tr><tr><td>Certification plan</td><td>Learning</td><td>In progress</td><td>Sep 2026</td></tr></tbody></table></div></div>
+  </div>
+</div></section>
+
+<!-- ADMIN -->
+<section class="view" id="admin"><div class="page">
+  <div class="breadcrumb">System / Admin & Governance</div><div class="title-row"><div><h1>Admin & Agent Governance</h1><p class="sub">Manage agents, users, tools, policies, evaluation and audit trails.</p></div><button class="btn soft">Create policy</button></div>
+  <div class="grid-4"><div class="card metric"><div class="kicker">Registered agents</div><div class="num">06</div></div><div class="card metric"><div class="kicker">Policies</div><div class="num">18</div></div><div class="card metric"><div class="kicker">Open reviews</div><div class="num">08</div></div><div class="card metric"><div class="kicker">Tool connections</div><div class="num">12</div></div></div>
+  <div class="section grid-2"><div class="card"><h3>Governance controls</h3><div class="list" style="margin-top:12px"><div class="list-item"><span>Agent identity & RBAC</span><b>ON</b></div><div class="list-item"><span>Prompt-injection guardrails</span><b>ON</b></div><div class="list-item"><span>Evaluation gates</span><b>ON</b></div><div class="list-item"><span>Audit logging</span><b>ON</b></div><div class="list-item"><span>Human review queue</span><b>ON</b></div></div></div><div class="card"><h3>Agent lifecycle</h3><div class="workflow"><span class="node">Draft</span><span class="arr">→</span><span class="node">Evaluate</span><span class="arr">→</span><span class="node">Red-team</span><span class="arr">→</span><span class="node">Publish</span><span class="arr">→</span><span class="node">Monitor</span></div></div></div>
+</div></section>
+
+<!-- SETTINGS -->
+<section class="view" id="settings"><div class="page">
+  <div class="breadcrumb">Account / Settings</div><div class="title-row"><div><h1>Settings</h1><p class="sub">Personalization and platform preferences.</p></div></div>
+  <div class="grid-2"><div class="card"><h3>Language & accessibility</h3><div class="list" style="margin-top:12px"><div class="list-item"><span>Interface language</span><b>English / हिन्दी</b></div><div class="list-item"><span>Voice input</span><b>ON</b></div><div class="list-item"><span>Low-bandwidth mode</span><b>ON</b></div></div></div><div class="card"><h3>Notifications</h3><div class="list" style="margin-top:12px"><div class="list-item"><span>Safety alerts</span><b>ON</b></div><div class="list-item"><span>Learning reminders</span><b>ON</b></div><div class="list-item"><span>Voucher / entitlement events</span><b>ON</b></div></div></div></div>
+</div></section>
+
+<footer class="footer" style="margin-top:0"><div><h3>Rural Guardian Intelligence Platform</h3><p>Enterprise-style multi-agent platform demo. UI can be connected to real Microsoft services through secure backend integrations.</p></div><p>© 2026 · Made by Sunny · Demo environment</p></footer>
+</main></div>
+
+
+
+<button class="copilot-fab" id="copilotFab" type="button" style="pointer-events:auto !important;z-index:999999 !important;" onclick="var d=document.getElementById('copilotDrawer');d.style.display=d.style.display==='flex'?'none':'flex';d.style.flexDirection='column';d.style.zIndex='99999';">✦ AI Copilot</button>
+<aside class="copilot-drawer" id="copilotDrawer">
+  <div class="copilot-head">
+    <div><b>Rural Guardian Copilot</b><br/><small>Router + safety layer</small></div>
+    <button class="btn" id="copilotClose" style="padding:6px 9px">×</button>
+  </div>
+  <div class="copilot-body" id="copilotBody">
+    <div class="copilot-msg ai"><b>Rural Guardian Copilot</b><br/>Tell me the problem. I’ll route it to a specialist and apply the shared risk & reliability policy.</div>
+    <div class="copilot-msg ai"><b>Try:</b> “Why did my Azure deployment return 403?”, “My voucher was not redeemable”, “Is there an Azure outage?”, or “Why am I getting GitHub 429?”</div>
+  </div>
+  <div class="copilot-input"><input id="globalCopilotInput" placeholder="Ask about a problem..."/><button class="btn dark" id="globalCopilotSend">Send</button></div>
+</aside>
+
+
+<script>
+(function(){
+  const ecoView = document.getElementById("ms-ecosystem");
+  if(!ecoView) return;
+
+  function replayEcosystemMotion(){
+    ecoView.querySelectorAll(".eco-card").forEach(card => {
+      card.style.animation = "none";
+      card.offsetHeight; // force reflow to restart animation
+      card.style.animation = "";
+    });
+  }
+
+  const observer = new MutationObserver(() => {
+    if(ecoView.classList.contains("active")) replayEcosystemMotion();
+  });
+
+  observer.observe(ecoView, {attributes:true, attributeFilter:["class"]});
+
+  if(ecoView.classList.contains("active")){
+    requestAnimationFrame(replayEcosystemMotion);
+  }
+})();
+</script>
+
+
+<script>
+const views=[...document.querySelectorAll('.view')];
+function showView(id){
+  views.forEach(v=>v.classList.toggle('active',v.id===id));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.go)));
+async function apiChat(text, module='rural-guardian'){
+  const res = await fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json','X-CSRF-Token':window.__rgCsrf||''}, credentials:'include', body:JSON.stringify({session_id:window.__rgSessionId||0,module,message:text})});
+  if(!res.ok) throw new Error((await res.text())||('HTTP '+res.status));
+  return res.json();
+}
+async function ensureApiSession(){
+  try{
+    const me=await fetch('/api/auth/me',{credentials:'include'});
+    if(me.ok) return true;
+    const csrf=await fetch('/api/auth/csrf',{credentials:'include'}); const cj=await csrf.json(); window.__rgCsrf=cj.csrf;
+    const login=await fetch('/api/auth/demo-login',{method:'POST',headers:{'X-CSRF-Token':cj.csrf},credentials:'include'});
+    if(!login.ok) return false; const lj=await login.json(); window.__rgSessionId=lj.session_id; return true;
+  }catch(e){ return false; }
+}
+(async()=>{await ensureApiSession();})();
+
+document.getElementById('sendBtn')?.addEventListener('click',async()=>{
+  const input=document.getElementById('chatInput'); const val=input.value.trim(); if(!val)return;
+  const box=document.getElementById('messages');
+  const user=document.createElement('div'); user.className='msg user'; user.textContent=val; box.appendChild(user);
+  const ai=document.createElement('div'); ai.className='msg ai'; ai.textContent='Routing request…'; box.appendChild(ai); box.scrollTop=box.scrollHeight; input.value='';
+  try{
+    if(!window.__rgSessionId && !(await ensureApiSession())) throw new Error('Backend authentication unavailable');
+    const data=await apiChat(val);
+    ai.innerHTML='<b>Router → '+(data.agent||'Universal Router')+'</b><br/><span class="risk '+(data.risk==='high'?'high':data.risk==='medium'?'med':'low')+'">RISK: '+(data.risk||'low').toUpperCase()+'</span><br/><br/>'+String(data.answer||'No response').replace(/\n/g,'<br/>');
+  }catch(e){
+    ai.innerHTML='<b>Backend unavailable</b><br/>The UI is still running, but the API could not be reached. Start Docker/backend and retry.<br/><small>'+String(e.message||e)+'</small>';
+  }
+  box.scrollTop=box.scrollHeight;
+});
+
+
+function showDiagnostic(agent){
+  const box=document.getElementById('diagnostic-result');
+  if(!box)return;
+  const map={
+    'Identity & Sign-in Agent':['MEDIUM','Check exact account, sign-in error details, MFA status and Conditional Access policies. Use Microsoft Entra sign-in logs for the failure reason.'],
+    'Student Eligibility Agent':['MEDIUM','Check supported academic eligibility, correct university account, institution domain recognition and account/tenant linking. Escalate through the applicable Azure / program support path when verification remains blocked.'],
+    'Azure Subscription & Cost Agent':['MEDIUM','Check subscription state, available credits, spending limit and Marketplace services that may bill separately.'],
+    'Foundry Deployment Agent':['HIGH','Check model/region availability, quota allocation, deployment status and connected resources before retrying.'],
+    'RBAC Permission Agent':['HIGH','Check the exact Azure scope and required role. For Entra ID authentication, confirm the user/service principal has the required Foundry/Azure RBAC assignment.'],
+    'Certification Profile Agent':['MEDIUM','Check that the legal name in Microsoft Learn matches the government ID and use Credentials Support for restricted changes.'],
+    'Voucher & Entitlement Agent':['MEDIUM','Check program eligibility, voucher expiration, one-time redemption rules and appointment timing. Never expose or distribute codes in the app.'],
+    'Learning Sync Agent':['MEDIUM','Compare the Learn profile as the source of truth, then check the connected program / experience and use Credentials Support where required.'],
+    'Microsoft 365 Access Agent':['MEDIUM','Check sign-in status, license, MFA and the exact product status code before escalation.'],
+    'Azure Deployment Agent':['MEDIUM','Check resource provider registration, API version, resource type and target region.']
+  };
+  const item=map[agent]||['MEDIUM','Collect the exact error and follow the official troubleshooting flow.'];
+  box.innerHTML='<h3>Diagnostic output</h3><div style="margin-top:14px;padding:14px;background:#f7f9fc;border:1px solid var(--border);border-radius:12px;font-size:12px;line-height:1.7"><b>'+agent+'</b><br/><span class="risk '+(item[0]==='HIGH'?'high':item[0]==='MEDIUM'?'med':'low')+'">RISK: '+item[0]+'</span><br/><br/>'+item[1]+'<br/><br/><b>Output:</b> Evidence → Safe next steps → Official support path.</div>';
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function runAbuseDemo(){
+  alert('SAFE DEMO\\nRisk level: MEDIUM\\nReason: voucher resale / sharing language detected.\\nActions: educate → verify through official channels → internal review → escalate to authorized program support.\\nNo codes are generated, validated or distributed.');
+}
+
+// Global right-side copilot
+window.addEventListener('DOMContentLoaded',()=>{
+const fab=document.getElementById('copilotFab');
+const drawer=document.getElementById('copilotDrawer');
+const closeBtn=document.getElementById('copilotClose');
+fab?.addEventListener('click',()=>drawer?.classList.toggle('open'));
+closeBtn?.addEventListener('click',()=>drawer?.classList.remove('open'));
+});
+const gcInput=document.getElementById('globalCopilotInput'), gcSend=document.getElementById('globalCopilotSend'), gcBody=document.getElementById('copilotBody');
+function routeGlobal(text){
+  const t=text.toLowerCase();
+  if(/revenue|profit|headcount|financial|finance|subsidiary|company count|segment|earnings|10-k|annual report|linkedin revenue|github revenue/.test(t)) return ['Microsoft Business Intelligence Agent','LOW'];
+  if(/voucher|license|key|coupon|resale|share code|subscription/.test(t)) return ['Voucher & License Abuse Monitor','MEDIUM'];
+  if(/403|401|permission|rbac|mfa|sign in|login|tenant/.test(t)) return ['Identity & Access Agent','HIGH'];
+  if(/quota|429|rate limit|throttle|timeout|api/.test(t)) return ['API & Reliability Agent','MEDIUM'];
+  if(/outage|down|unavailable|region|provider/.test(t)) return ['Outage & Provider Limits Agent','MEDIUM'];
+  if(/privacy|pii|personal data|secret|token|password/.test(t)) return ['Data Privacy & Compliance Agent','HIGH'];
+  if(/browser|chrome|edge|mobile|microphone|camera/.test(t)) return ['Browser & Compatibility Agent','LOW'];
+  if(/crop|wheat|farmer|rain/.test(t)) return ['Agriculture Guardian','LOW'];
+  if(/flood|storm|fire|disaster/.test(t)) return ['Disaster Response Guardian','HIGH'];
+  if(/exam|study|student|certificate/.test(t)) return ['Education / Certification Agent','LOW'];
+  return ['Universal Rural Router','LOW'];
+}
+function sendGlobal(){
+  const v=gcInput.value.trim(); if(!v)return;
+  const u=document.createElement('div');u.className='copilot-msg user';u.textContent=v;gcBody.appendChild(u);
+  const [agent,risk]=routeGlobal(v);
+  const a=document.createElement('div');a.className='copilot-msg ai';
+  let action='Check the exact error, follow the applicable official documentation, and escalate through an authorized support path when needed.';
+  if(risk==='HIGH') action='Do not share secrets or credentials. Verify identity / authorization, record only non-sensitive evidence, and escalate safely.';
+  if(agent==='Voucher & License Abuse Monitor') action='Do not generate, validate or distribute codes. Educate, verify program eligibility/terms, log the review and use official support/reporting channels.';
+  a.innerHTML='<b>Router → '+agent+'</b><br/><span class="risk '+(risk==='HIGH'?'high':risk==='MEDIUM'?'med':'low')+'">RISK: '+risk+'</span><br/><br/>'+action;
+  gcBody.appendChild(a);gcBody.scrollTop=gcBody.scrollHeight;gcInput.value='';
+}
+gcSend?.addEventListener('click',sendGlobal);gcInput?.addEventListener('keydown',e=>{if(e.key==='Enter')sendGlobal()});
+
+// Browser diagnostics
+const online=document.getElementById('online-status'), secure=document.getElementById('secure-status'), viewport=document.getElementById('viewport-status');
+if(online) online.textContent=navigator.onLine?'ONLINE':'OFFLINE';
+if(secure) secure.textContent=window.isSecureContext?'SECURE':'LOCAL / CHECK';
+if(viewport) viewport.textContent=window.innerWidth+' × '+window.innerHeight;
+
+
+function selectCopilotAgent(btn, name){
+  document.querySelectorAll('.agent-choice button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const label=document.getElementById('selectedAgentTip');
+  if(label) label.textContent='Selected: '+name;
+}
+const pageSend=document.getElementById('copilotPageSend');
+pageSend?.addEventListener('click',()=>{
+  const input=document.getElementById('copilotPageInput');
+  const box=document.getElementById('copilotPageMessages');
+  const v=input?.value.trim();
+  if(!v||!box)return;
+  const u=document.createElement('div');u.className='copilot-bubble user';u.textContent=v;box.appendChild(u);
+  const t=v.toLowerCase();
+  let agent='Universal Router',risk='LOW';
+  if(/voucher|license|key|coupon|resale|credential|password|token/.test(t)){agent='Voucher & License Abuse Monitor';risk='HIGH';}
+  else if(/403|401|rbac|mfa|login|sign in|permission/.test(t)){agent='Identity & Access Agent';risk='HIGH';}
+  else if(/quota|429|rate limit|api|timeout/.test(t)){agent='API & Reliability Agent';risk='MEDIUM';}
+  else if(/outage|down|unavailable|region/.test(t)){agent='Outage & Provider Limits Agent';risk='MEDIUM';}
+  else if(/crop|wheat|farmer|rain/.test(t)){agent='Agriculture Guardian';risk='LOW';}
+  else if(/flood|storm|fire|disaster/.test(t)){agent='Disaster Response Guardian';risk='HIGH';}
+  else if(/exam|study|student|certificate/.test(t)){agent='Education / Certification Agent';risk='LOW';}
+  const a=document.createElement('div');a.className='copilot-bubble ai';
+  a.innerHTML='<b>Router → '+agent+'</b><br/><span class="risk '+(risk==='HIGH'?'high':risk==='MEDIUM'?'med':'low')+'">RISK: '+risk+'</span><br/><br/>Demo guidance: review the relevant evidence, follow official documentation, and escalate through an authorized support path when needed.';
+  box.appendChild(a);box.scrollTop=box.scrollHeight;input.value='';
+});
+
+
+
+let currentMap='world';
+let mapScale=1;
+let panX=0;
+let panY=0;
+let isDragging=false;
+let dragStartX=0;
+let dragStartY=0;
+let startPanX=0;
+let startPanY=0;
+
+function switchMap(view){
+  currentMap=view;
+  const world=document.getElementById('worldMap');
+  const india=document.getElementById('indiaMap');
+  const worldTab=document.getElementById('mapTabWorld');
+  const indiaTab=document.getElementById('mapTabIndia');
+
+  if(view==='india'){
+    world.classList.add('map-view-hidden');
+    india.classList.remove('map-view-hidden');
+    worldTab.classList.remove('active');
+    indiaTab.classList.add('active');
+  }else{
+    india.classList.add('map-view-hidden');
+    world.classList.remove('map-view-hidden');
+    indiaTab.classList.remove('active');
+    worldTab.classList.add('active');
+  }
+
+  resetMap();
+}
+
+function mapZoom(step){
+  if(step===0){
+    mapScale=1;
+  }else{
+    mapScale=Math.min(1.8,Math.max(.7,mapScale+step));
+  }
+  applyMapTransform();
+}
+
+function resetMap(){
+  mapScale=1;
+  panX=0;
+  panY=0;
+  applyMapTransform();
+}
+
+function applyMapTransform(){
+  document.querySelectorAll('.bi-map-svg').forEach(svg=>{
+    svg.style.transform='translate('+panX+'px,'+panY+'px) scale('+mapScale+')';
+  });
+}
+
+function selectMapLocation(name,region,value,type){
+  const detail=document.getElementById('mapDetail');
+  if(!detail)return;
+
+  detail.querySelector('.eco-badge').textContent='LOCATION SELECTED';
+  detail.querySelector('.map-detail-value').textContent=value;
+  detail.querySelector('.map-detail-label').textContent=name+' · '+type;
+  document.getElementById('detailRegion').textContent=region;
+  document.getElementById('detailType').textContent=type;
+
+  detail.animate(
+    [
+      {transform:'translateY(5px)',opacity:.7},
+      {transform:'translateY(0)',opacity:1}
+    ],
+    {duration:180,easing:'ease-out'}
+  );
+}
+
+function showMapTooltip(event,name,value,status){
+  const stage=document.querySelector('.bi-map-stage');
+  const tooltip=document.getElementById('mapTooltip');
+  if(!stage || !tooltip)return;
+
+  const rect=stage.getBoundingClientRect();
+  const x=event.clientX-rect.left+12;
+  const y=event.clientY-rect.top+12;
+
+  document.getElementById('tooltipName').textContent=name;
+  document.getElementById('tooltipValue').textContent=value;
+  document.getElementById('tooltipStatus').textContent=status;
+
+  tooltip.style.left=Math.min(x,rect.width-235)+'px';
+  tooltip.style.top=Math.min(y,rect.height-88)+'px';
+  tooltip.style.display='block';
+}
+
+function hideMapTooltip(){
+  const tooltip=document.getElementById('mapTooltip');
+  if(tooltip) tooltip.style.display='none';
+}
+
+function initMapInteractions(){
+  const stage=document.querySelector('.bi-map-stage');
+  if(!stage)return;
+
+  stage.addEventListener('pointerdown',event=>{
+    isDragging=true;
+    stage.classList.add('dragging');
+    dragStartX=event.clientX;
+    dragStartY=event.clientY;
+    startPanX=panX;
+    startPanY=panY;
+    stage.setPointerCapture?.(event.pointerId);
+  });
+
+  stage.addEventListener('pointermove',event=>{
+    if(isDragging){
+      panX=startPanX+(event.clientX-dragStartX);
+      panY=startPanY+(event.clientY-dragStartY);
+      applyMapTransform();
+      return;
+    }
+  });
+
+  const stopDragging=()=>{
+    isDragging=false;
+    stage.classList.remove('dragging');
+  };
+
+  stage.addEventListener('pointerup',stopDragging);
+  stage.addEventListener('pointercancel',stopDragging);
+  stage.addEventListener('pointerleave',()=>{
+    if(!isDragging) hideMapTooltip();
+  });
+
+  // Hover tooltips for the world markers.
+  document.querySelectorAll('#worldMap .map-marker').forEach(marker=>{
+    marker.addEventListener('pointerenter',event=>{
+      const title=marker.querySelector('text')?.textContent || 'Location';
+      const configs={
+        'US':['120+ entities','Published / illustrative'],
+        'UK':['20+ locations','Published / illustrative'],
+        'IN':['50+ locations','Published / illustrative'],
+        'DE':['10+ locations','Published / illustrative'],
+        'JP':['10+ locations','Published / illustrative']
+      };
+      const c=configs[title] || ['Data available','Demo'];
+      showMapTooltip(event,title,c[0],c[1]);
+    });
+    marker.addEventListener('pointerleave',hideMapTooltip);
+  });
+
+  document.querySelectorAll('#indiaMap .map-marker').forEach(marker=>{
+    marker.addEventListener('pointerenter',event=>{
+      const title=marker.querySelector('text')?.textContent || 'Location';
+      const configs={
+        'Hyderabad':['Large delivery presence','Published location'],
+        'Bengaluru':['Large technology presence','Published location'],
+        'Noida':['Office presence','Published location'],
+        'Pune':['Office presence','Published location'],
+        'Mumbai':['Office presence','Published location']
+      };
+      const c=configs[title] || ['Data available','Demo'];
+      showMapTooltip(event,title,c[0],c[1]);
+    });
+    marker.addEventListener('pointerleave',hideMapTooltip);
+  });
+}
+
+initMapInteractions();
+
+
+/* Visual entry animations for ecosystem / problem / BI cards */
+function prepareVisualCardAnimations(){
+  const selectors = [
+    '.eco-grid > *',
+    '.problem-grid > *',
+    '#business-intel .grid-3 > .card',
+    '#business-intel .grid-2 > .card',
+    '#bi-overview .grid-2 > .card',
+    '#bi-regional .grid-2 > .card',
+    '#bi-segments .grid-3 > .card',
+    '#bi-entities .grid-3 > .card',
+    '#bi-risk .grid-2 > .card',
+    '#bi-finance .grid-3 > .card',
+    '#bi-sources .source-list > .card'
+  ];
+
+  document.querySelectorAll(selectors.join(',')).forEach((card,index)=>{
+    const parent=card.parentElement;
+    const cards=[...parent.children];
+    const position=cards.indexOf(card);
+    const columnCount=getComputedStyle(parent).gridTemplateColumns.split(' ').length;
+
+    card.classList.remove('reveal-left','reveal-right','reveal-up');
+
+    if(columnCount===1){
+      card.classList.add('reveal-up');
+    }else{
+      const column=position % columnCount;
+      if(column===0){
+        card.classList.add('reveal-left');
+      }else if(column===columnCount-1){
+        card.classList.add('reveal-right');
+      }else{
+        card.classList.add('reveal-up');
+      }
+    }
+
+    card.style.animationDelay=(Math.min(position,8)*0.055)+'s';
+  });
+}
+
+function activateVisualCardAnimations(){
+  prepareVisualCardAnimations();
+
+  const items=document.querySelectorAll('.reveal-left,.reveal-right,.reveal-up');
+
+  if(!('IntersectionObserver' in window)){
+    items.forEach(el=>el.classList.add('is-visible'));
+    return;
+  }
+
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  },{threshold:.10,rootMargin:'0px 0px -24px 0px'});
+
+  items.forEach(el=>observer.observe(el));
+}
+
+window.addEventListener('load',activateVisualCardAnimations);
+window.addEventListener('resize',prepareVisualCardAnimations);
+
+
+document.querySelectorAll('.overview-module-action').forEach(link=>{
+  link.addEventListener('click',event=>{
+    const id=link.getAttribute('href')?.slice(1);
+    const target=id ? document.getElementById(id) : null;
+    if(target && target.classList.contains('view')){
+      event.preventDefault();
+      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+      target.classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+  });
+});
+
+</script>
+</body>
+</html>
