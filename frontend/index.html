@@ -3000,11 +3000,27 @@ async function apiChat(text, module='rural-guardian'){
 }
 async function ensureApiSession(){
   try{
+    const csrf=await fetch('/api/auth/csrf',{credentials:'include'});
+    if(!csrf.ok) return false;
+    const cj=await csrf.json();
+    window.__rgCsrf=cj.csrf;
+
     const me=await fetch('/api/auth/me',{credentials:'include'});
-    if(me.ok) return true;
-    const csrf=await fetch('/api/auth/csrf',{credentials:'include'}); const cj=await csrf.json(); window.__rgCsrf=cj.csrf;
-    const login=await fetch('/api/auth/demo-login',{method:'POST',headers:{'X-CSRF-Token':cj.csrf},credentials:'include'});
-    if(!login.ok) return false; const lj=await login.json(); window.__rgSessionId=lj.session_id; return true;
+    if(me.ok){
+      const meData=await me.json();
+      window.__rgSessionId=meData.session_id || window.__rgSessionId;
+      return true;
+    }
+
+    const login=await fetch('/api/auth/demo-login',{
+      method:'POST',
+      headers:{'X-CSRF-Token':cj.csrf},
+      credentials:'include'
+    });
+    if(!login.ok) return false;
+    const lj=await login.json();
+    window.__rgSessionId=lj.session_id;
+    return true;
   }catch(e){ return false; }
 }
 (async()=>{await ensureApiSession();})();
