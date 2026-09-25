@@ -28,7 +28,7 @@ FounderZ activity page showing the submitted Rural Guardian project, activity vi
 
 ![Microsoft Agent-a-Thon Submission](docs/microsoft-agent-thon.png)
 
-> **Screenshots are kept under `docs/screenshots/` for a clean repository structure. Upload the two images there to render them directly in this section.**
+> ****
 
 ---
 
