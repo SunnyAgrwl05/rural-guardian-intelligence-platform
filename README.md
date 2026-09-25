@@ -20,13 +20,13 @@ Built as a **Microsoft Agent-a-Thon prototype**.
 
 The main application dashboard and core product experience.
 
-**Screenshot:** `docs/screenshots/main-dashboard.png`
+**Screenshot:** `docs/main-dashboard.png`
 
 ### Microsoft Agent-a-Thon Submission
 
 FounderZ activity page showing the submitted Rural Guardian project, activity video, summary, Microsoft Copilot/agent tooling, and supporting material.
 
-**Screenshot:** `docs/screenshots/microsoft-agent-thon.png`
+**Screenshot:** `docs/microsoft-agent-thon.png`
 
 > **Screenshots are kept under `docs/screenshots/` for a clean repository structure. Upload the two images there to render them directly in this section.**
 
