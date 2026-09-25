@@ -9,6 +9,7 @@ from app.core.config import settings
 from app.models import User, UserSession
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
+
 class Login(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8, max_length=200)
@@ -22,7 +23,8 @@ def csrf(response: Response):
 def _login_user(u: User, response: Response, db: Session):
     j = uuid4().hex
     s = UserSession(user_id=u.id, token_id=j, expires_at=datetime.now(timezone.utc) + timedelta(minutes=30))
-    db.add(s); db.commit()
+    db.add(s)
+    db.commit()
     response.set_cookie(COOKIE, make_token(u.id, u.role, j), httponly=True, secure=False, samesite="strict", max_age=1800)
     return {"id": u.id, "email": u.email, "role": u.role, "session_id": s.id}
 
@@ -49,14 +51,28 @@ def logout(response: Response):
 
 def current_user(request: Request, db: Session = Depends(get_db)):
     t = request.cookies.get(COOKIE)
-    if not t: raise HTTPException(401, "Not authenticated")
+    if not t:
+        raise HTTPException(401, "Not authenticated")
     p = decode_token(t)
     s = db.query(UserSession).filter_by(token_id=p["jti"], user_id=int(p["sub"])).first()
-    if not s or s.expires_at < datetime.now(timezone.utc): raise HTTPException(401, "Session expired")
+    if not s or s.expires_at < datetime.now(timezone.utc):
+        raise HTTPException(401, "Session expired")
     u = db.get(User, int(p["sub"]))
-    if not u or not u.active: raise HTTPException(401, "Inactive user")
+    if not u or not u.active:
+        raise HTTPException(401, "Inactive user")
     return u
 
 @router.get("/me", name="auth_me")
-def auth_me(user=Depends(current_user)):
-    return {"id": user.id, "email": user.email, "role": user.role}
+def auth_me(user=Depends(current_user), db: Session = Depends(get_db)):
+    session = (
+        db.query(UserSession)
+        .filter(UserSession.user_id == user.id, UserSession.expires_at > datetime.now(timezone.utc))
+        .order_by(UserSession.id.desc())
+        .first()
+    )
+    return {
+        "id": user.id,
+        "email": user.email,
+        "role": user.role,
+        "session_id": session.id if session else None,
+    }
