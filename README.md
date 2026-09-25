@@ -6,6 +6,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-%2B%20pgvector-4169E1?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
 [![Redis](https://img.shields.io/badge/Redis-Rate%20Limiting-DC382D?style=for-the-badge&logo=redis)](https://redis.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
 **Rural Guardian Intelligence Platform** is a multi-agent AI platform designed around the needs of rural communities. It brings specialized AI agents, a natural-language Copilot, safety-aware routing, knowledge retrieval, analytics, governance, and responsible-AI controls into one platform.
 
@@ -17,15 +18,17 @@ Built as a **Microsoft Agent-a-Thon prototype**.
 
 ### Rural Guardian — Main Dashboard
 
-> Add the main application screenshot here as `docs/screenshots/main-dashboard.png`.
+The main application dashboard and core product experience.
 
-![Rural Guardian Main Dashboard](docs/screenshots/main-dashboard.png)
+**Screenshot:** `docs/screenshots/main-dashboard.png`
 
-### Submission & Activity Preview
+### Microsoft Agent-a-Thon Submission
 
-> FounderZ activity/submission screenshot.
+FounderZ activity page showing the submitted Rural Guardian project, activity video, summary, Microsoft Copilot/agent tooling, and supporting material.
 
-![Microsoft Agent-a-Thon Submission](docs/screenshots/microsoft-agent-thon.png)
+**Screenshot:** `docs/screenshots/microsoft-agent-thon.png`
+
+> **Screenshots are kept under `docs/screenshots/` for a clean repository structure. Upload the two images there to render them directly in this section.**
 
 ---
 
@@ -269,6 +272,12 @@ Rural-Guardian-Intelligence-Platform/
 ├── .gitignore
 └── README.md
 ```
+
+---
+
+## 📄 License
+
+This project is released under the **MIT License**. See [LICENSE](LICENSE).
 
 ---
 
